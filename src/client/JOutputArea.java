@@ -1,3 +1,4 @@
+package client;
 /*
  * JOutputArea - Simple output area for jTPCC
  *
@@ -9,8 +10,7 @@
 import java.awt.*;
 import javax.swing.*;
 
-public class JOutputArea extends JScrollPane
-{
+public class JOutputArea extends JScrollPane implements PrintOutput {
     public final static long DEFAULT_MAX_CHARS = 20000, NO_CHAR_LIMIT = 0;
 
     private JTextArea jTextArea;

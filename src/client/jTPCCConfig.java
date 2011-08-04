@@ -1,3 +1,5 @@
+package client;
+
 /*
  * jTPCCConfig - Basic configuration parameters for jTPCC
  *

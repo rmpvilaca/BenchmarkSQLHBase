@@ -1,3 +1,5 @@
+package client;
+
 /*
  * jTPCC - Open Source Java implementation of a TPC-C like benchmark
  *
@@ -15,7 +17,7 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;   
   
-public class jTPCC extends JFrame implements jTPCCConfig, ActionListener, WindowListener
+public class jTPCC extends JFrame implements jTPCCConfig, ActionListener, WindowListener,TerminalEndedTransactionListener
 {
     private JTabbedPane jTabbedPane;
     private JPanel jPanelControl, jPanelConfigSwitch, jPanelTerminalOutputs, jPanelOutputSwitch;

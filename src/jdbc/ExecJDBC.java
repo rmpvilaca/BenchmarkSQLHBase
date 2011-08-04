@@ -1,3 +1,5 @@
+package jdbc;
+
 /*
  * ExecJDBC - Command line program to process SQL DDL statements, FROM TUPLE  
  *             a text input file, to any JDBC Data Source
@@ -6,6 +8,8 @@
  *
  */
 
+
+import client.jTPCCUtil;
 
 import java.io.*;
 import java.sql.*;
@@ -50,7 +54,7 @@ public class ExecJDBC {
                                                                                 
       // Open inputFile
       BufferedReader in = new BufferedReader
-        (new FileReader(jTPCCUtil.getSysProp("commandFile",null)));
+        (new FileReader(jTPCCUtil.getSysProp("commandFile", null)));
       System.out.println("-------------------------------------------------\n");
   
       // loop thru input file and concatenate SQL statement fragments

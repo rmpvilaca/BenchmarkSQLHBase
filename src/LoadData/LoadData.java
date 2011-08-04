@@ -1,3 +1,5 @@
+package LoadData;
+
 /*
  * Copyright (C) 2004-2006, Denis Lussier
  *
@@ -18,6 +20,11 @@
  *    IMMEDIATE keyword not needed if DB2_COMPATIBILITY_VECTOR regvar set appropriately (V9.7) , but can't assume this 
  */
 
+
+import client.jTPCCConfig;
+import client.jTPCCUtil;
+import jdbc.jdbcIO;
+import pojo.*;
 
 import java.sql.*;
 import java.util.*;

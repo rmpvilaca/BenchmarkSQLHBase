@@ -1,4 +1,4 @@
-/*
+package client;/*
  * jTPCCUtil - utility functions for the Open Source Java implementation of 
  *    the TPC-C benchmark
  *

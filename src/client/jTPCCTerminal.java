@@ -1,3 +1,4 @@
+package client;
 /*
  * jTPCCTerminal - Terminal emulator code for jTPCC (transactions)
  *
@@ -6,11 +7,11 @@
  *
  */
 
+import pojo.*;
+
 import java.io.*;
 import java.sql.*;
-import java.sql.Date;
 import java.util.*;
-import javax.swing.*;
 
 
 public class jTPCCTerminal implements jTPCCConfig, Runnable
@@ -22,9 +23,9 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
     private ResultSet rs = null;
     private int terminalWarehouseID, terminalDistrictID;
     private int paymentWeight, orderStatusWeight, deliveryWeight, stockLevelWeight;
-    private JOutputArea terminalOutputArea, errorOutputArea;
+    private PrintOutput terminalOutputArea, errorOutputArea;
     private boolean debugMessages;
-    private jTPCC parent;
+    private TerminalEndedTransactionListener listener;
     private Random  gen;
 
     private int transactionCount = 1, numTransactions, numWarehouses, newOrderCounter;
@@ -77,7 +78,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
       private PreparedStatement stockGetDistOrderId = null;
       private PreparedStatement stockGetCountStock = null;
 
-    public jTPCCTerminal(String terminalName, int terminalWarehouseID, int terminalDistrictID, Connection conn, int numTransactions, JOutputArea terminalOutputArea, JOutputArea errorOutputArea, boolean debugMessages, int paymentWeight, int orderStatusWeight, int deliveryWeight, int stockLevelWeight, int numWarehouses, jTPCC parent) throws SQLException
+    public jTPCCTerminal(String terminalName, int terminalWarehouseID, int terminalDistrictID, Connection conn, int numTransactions, PrintOutput terminalOutputArea, PrintOutput errorOutputArea, boolean debugMessages, int paymentWeight, int orderStatusWeight, int deliveryWeight, int stockLevelWeight, int numWarehouses, TerminalEndedTransactionListener listener) throws SQLException
     {
         this.terminalName = terminalName;
         this.conn = conn;
@@ -93,7 +94,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
         this.terminalOutputArea = terminalOutputArea;
         this.errorOutputArea = errorOutputArea;
         this.debugMessages = debugMessages;
-        this.parent = parent;
+        this.listener = listener;
         this.numTransactions = numTransactions;
         this.paymentWeight = paymentWeight;
         this.orderStatusWeight = orderStatusWeight;
@@ -123,7 +124,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
 
         printMessage("Terminal \'" + terminalName + "\' finished after " + (transactionCount-1) + " transaction(s).");
 
-        parent.signalTerminalEnded(this, newOrderCounter);
+        listener.signalTerminalEnded(this, newOrderCounter);
     }
 
     public void stopRunningWhenPossible()
@@ -182,11 +183,11 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
 
             if(!transactionTypeName.equals("Delivery"))
             {
-                parent.signalTerminalEndedTransaction(this.terminalName, transactionTypeName, transactionEnd - transactionStart, null, newOrder);
+                listener.signalTerminalEndedTransaction(this.terminalName, transactionTypeName, transactionEnd - transactionStart, null, newOrder);
             }
             else
             {
-                parent.signalTerminalEndedTransaction(this.terminalName, transactionTypeName, transactionEnd - transactionStart, (skippedDeliveries == 0 ? "None" : "" + skippedDeliveries + " delivery(ies) skipped."), newOrder);
+                listener.signalTerminalEndedTransaction(this.terminalName, transactionTypeName, transactionEnd - transactionStart, (skippedDeliveries == 0 ? "None" : "" + skippedDeliveries + " delivery(ies) skipped."), newOrder);
             }
 
 
@@ -772,7 +773,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
         boolean newOrderRowInserted;
 
         Warehouse whse = new Warehouse();
-        Customer  cust = new Customer();
+        Customer cust = new Customer();
         District  dist = new District();
         NewOrder  nwor = new NewOrder();
         Oorder    ordr = new Oorder();

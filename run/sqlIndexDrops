@@ -1,14 +1,14 @@
 
-alter table warehouse drop constraint pk_warehouse;
+alter table TUPLEwarehouse drop constraint pk_warehouse;
 commit;
 
-alter table district drop constraint pk_district;
+alter table TUPLEdistrict drop constraint pk_district;
 commit;
 
 
-alter table customer drop constraint pk_customer;
+alter table TUPLEcustomer drop constraint pk_customer;
 commit;
-drop index ndx_customer_name;
+drop index TUPLEndx_customer_name;
 commit;
 
 
@@ -16,24 +16,24 @@ commit;
 -- commit;
 
 
-alter table oorder drop constraint pk_oorder;
+alter table TUPLEoorder drop constraint pk_oorder;
 commit;
-drop index ndx_oorder_carrier;
-commit;
-
-
-alter table new_order drop constraint pk_new_order;
+drop index TUPLEndx_oorder_carrier;
 commit;
 
 
-alter table order_line drop constraint pk_order_line;
+alter table TUPLEnew_order drop constraint pk_new_order;
 commit;
 
 
-alter table stock drop constraint pk_stock;
+alter table TUPLEorder_line drop constraint pk_order_line;
 commit;
 
 
-alter table item drop constraint pk_item;
+alter table TUPLEstock drop constraint pk_stock;
+commit;
+
+
+alter table TUPLEitem drop constraint pk_item;
 commit;
 

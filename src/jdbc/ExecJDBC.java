@@ -1,5 +1,5 @@
 /*
- * ExecJDBC - Command line program to process SQL DDL statements, from   
+ * ExecJDBC - Command line program to process SQL DDL statements, FROM TUPLE  
  *             a text input file, to any JDBC Data Source
  *
  * Copyright (C) 2004-2006, Denis Lussier

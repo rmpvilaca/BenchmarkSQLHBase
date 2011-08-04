@@ -1,26 +1,26 @@
-drop table warehouse;
+drop table TUPLEwarehouse;
 commit;
 
-drop table item;
+drop table TUPLEitem;
 commit;
 
-drop table stock;
+drop table TUPLEstock;
 commit;
 
-drop table district;
+drop table TUPLEdistrict;
 commit;
 
-drop table customer;
+drop table TUPLEcustomer;
 commit;
 
-drop table oorder;
+drop table TUPLEoorder;
 commit;
 
-drop table order_line;
+drop table TUPLEorder_line;
 commit;
 
-drop table history;
+drop table TUPLEhistory;
 commit;
 
-drop table new_order;
+drop table TUPLEnew_order;
 commit;

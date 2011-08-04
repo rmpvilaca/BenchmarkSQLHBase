@@ -1,18 +1,18 @@
 
-truncate table warehouse;
+truncate table TUPLEwarehouse;
 
-truncate table item;
+truncate table TUPLEitem;
 
-truncate table stock;
+truncate table TUPLEstock;
 
-truncate table district;
+truncate table TUPLEdistrict;
 
-truncate table customer;
+truncate table TUPLEcustomer;
 
-truncate table history;
+truncate table TUPLEhistory;
 
-truncate table oorder;
+truncate table TUPLEoorder;
 
-truncate table order_line;
+truncate table TUPLEorder_line;
 
-truncate table new_order;
+truncate table TUPLEnew_order;

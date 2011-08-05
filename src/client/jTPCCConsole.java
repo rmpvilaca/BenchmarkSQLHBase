@@ -7,8 +7,6 @@ package client;
  *
  */
 
-import javax.swing.*;
-import java.awt.event.WindowEvent;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.Random;
 
-public class jTPCCConsole extends JFrame implements jTPCCConfig, TerminalEndedTransactionListener {
+public class jTPCCConsole implements jTPCCConfig, TerminalEndedTransactionListener {
     private jTPCCTerminal[] terminals;
     private String[] terminalNames;
     private boolean terminalsBlockingExit = false;
@@ -40,8 +38,6 @@ public class jTPCCConsole extends JFrame implements jTPCCConfig, TerminalEndedTr
 
     public jTPCCConsole()
     {
-        super("BenchmarkSQL v" + JTPCCVERSION);
-
         // load the ini file
         Properties ini = new Properties();
         try {

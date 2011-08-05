@@ -1536,7 +1536,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
         conn.commit();
       } catch(SQLException se) {
         System.out.println(se.getMessage());
-        transRollback();
+        //transRollback();
       }
 
   } // end transCommit()

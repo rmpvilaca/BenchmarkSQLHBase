@@ -39,7 +39,7 @@ public class jTPCCConsole implements jTPCCConfig, TerminalEndedTransactionListen
     public jTPCCConsole()
     {
         // load the ini file
-        Properties ini = new Properties();
+        this.ini = new Properties();
         try {
             ini.load( new FileInputStream(System.getProperty("prop")));
         } catch (IOException e) {
@@ -206,11 +206,6 @@ public class jTPCCConsole implements jTPCCConfig, TerminalEndedTransactionListen
                         printMessage("Creating database connection for " + terminalName + "...");
                         conn = DriverManager.getConnection(database, username, password);
                         conn.setAutoCommit(false);
-                        JOutputArea terminalOutputArea = new JOutputArea();
-                        long maxChars = 150000/numTerminals;
-                        if(maxChars > JOutputArea.DEFAULT_MAX_CHARS) maxChars = JOutputArea.DEFAULT_MAX_CHARS;
-                        if(maxChars < 2000) maxChars = 2000;
-                        terminalOutputArea.setMaxChars(maxChars);
                         jTPCCTerminal terminal = new jTPCCTerminal(terminalName, terminalWarehouseID, terminalDistrictID, conn, transactionsPerTerminal, new PrintOutputStream(System.out), new PrintOutputStream(System.err), debugMessages, paymentWeightValue, orderStatusWeightValue, deliveryWeightValue, stockLevelWeightValue, numWarehouses, this);
                         terminals[i] = terminal;
                         terminalNames[i] = terminalName;

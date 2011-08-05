@@ -7,11 +7,8 @@ package client;/*
  *
  */
 
-import java.io.*;
-import java.sql.*;
 import java.util.*;
-import java.text.*;
- 
+
 public class jTPCCUtil implements jTPCCConfig 
 {
     

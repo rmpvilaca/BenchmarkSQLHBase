@@ -31,7 +31,7 @@ public class jTPCC extends JFrame implements jTPCCConfig, ActionListener, Window
     private JPanel jPanelConfigDatabase, jPanelConfigTerminals, jPanelConfigControls, jPanelConfigWeights;
     private Border jPanelConfigSwitchBorder;
 
-    private JTextField jTextFieldDatabase, jTextFieldUsername, jTextFieldPassword, jTextFieldDriver, jTextFieldNumTerminals, jTextFieldTransactionsPerTerminal, jTextFieldNumWarehouses, jTextFieldMinutes;
+    private JTextField jTextFieldDatabase, jTextFieldUsername, jTextFieldPassword, jTextFieldDriver, jTextFieldNumTerminals, jTextFieldTransactionsPerTerminal, jTextFieldNumWarehouses,jTextFieldStartWarehouse,  jTextFieldMinutes;
     private JButton jButtonCreateTerminals, jButtonStartTransactions, jButtonStopTransactions;
     private JTextField paymentWeight, orderStatusWeight, deliveryWeight, stockLevelWeight;
     private JRadioButton jRadioButtonTime, jRadioButtonNum;
@@ -152,6 +152,10 @@ public class jTPCC extends JFrame implements jTPCCConfig, ActionListener, Window
         jTextFieldNumTerminals = new JTextField(defaultNumTerminals);
         jTextFieldNumTerminals.setPreferredSize(new Dimension(28, (int)jTextFieldNumTerminals.getPreferredSize().getHeight()));
         jPanelConfigTerminals1.add(jTextFieldNumTerminals);
+        jPanelConfigTerminals1.add(new JLabel("Start  Warehouse"));
+        jTextFieldStartWarehouse = new JTextField(defaultStartWarehouse);
+        jTextFieldStartWarehouse.setPreferredSize(new Dimension(28, (int)jTextFieldStartWarehouse.getPreferredSize().getHeight()));
+        jPanelConfigTerminals1.add(jTextFieldNumWarehouses);
         jPanelConfigTerminals1.add(new JLabel("       Warehouses"));
         jTextFieldNumWarehouses = new JTextField(defaultNumWarehouses);
         jTextFieldNumWarehouses.setPreferredSize(new Dimension(28, (int)jTextFieldNumWarehouses.getPreferredSize().getHeight()));
@@ -302,11 +306,23 @@ public class jTPCC extends JFrame implements jTPCCConfig, ActionListener, Window
                 try
                 {
                     boolean limitIsTime = jRadioButtonTime.isSelected();
-                    int numTerminals = -1, transactionsPerTerminal = -1, numWarehouses = -1;
+                    int numTerminals = -1, transactionsPerTerminal = -1, numWarehouses = -1, startWarehouse=-1;
                     int paymentWeightValue = -1, orderStatusWeightValue = -1, deliveryWeightValue = -1, stockLevelWeightValue = -1;
                     long executionTimeMillis = -1;
 
                     jOutputAreaControl.println("");
+
+                    try
+                    {
+                        startWarehouse = Integer.parseInt(jTextFieldStartWarehouse.getText());
+                        if(startWarehouse <= 0)
+                            throw new NumberFormatException();
+                    }
+                    catch(NumberFormatException e1)
+                    {
+                        errorMessage("Invalid initial warehouses!");
+                        throw new Exception();
+                    }
 
                     try
                     {
@@ -423,7 +439,7 @@ public class jTPCC extends JFrame implements jTPCCConfig, ActionListener, Window
                             int terminalDistrictID;
                             do
                             {
-                                terminalWarehouseID = (int)randomNumber(1, numWarehouses);
+                                terminalWarehouseID = (int)randomNumber(startWarehouse, startWarehouse+numWarehouses-1);
                                 terminalDistrictID = (int)randomNumber(1, 10);
                             }
                             while(usedTerminals[terminalWarehouseID-1][terminalDistrictID-1] == 1);
@@ -439,7 +455,7 @@ public class jTPCC extends JFrame implements jTPCCConfig, ActionListener, Window
                             if(maxChars > JOutputArea.DEFAULT_MAX_CHARS) maxChars = JOutputArea.DEFAULT_MAX_CHARS;
                             if(maxChars < 2000) maxChars = 2000;
                             terminalOutputArea.setMaxChars(maxChars);
-                            jTPCCTerminal terminal = new jTPCCTerminal(terminalName, terminalWarehouseID, terminalDistrictID, conn, transactionsPerTerminal, terminalOutputArea, jOutputAreaErrors, debugMessages, paymentWeightValue, orderStatusWeightValue, deliveryWeightValue, stockLevelWeightValue, numWarehouses, this);
+                            jTPCCTerminal terminal = new jTPCCTerminal(terminalName, terminalWarehouseID, terminalDistrictID, conn, transactionsPerTerminal, terminalOutputArea, jOutputAreaErrors, debugMessages, paymentWeightValue, orderStatusWeightValue, deliveryWeightValue, stockLevelWeightValue, startWarehouse,numWarehouses, this);
                             terminals[i] = terminal;
                             terminalOutputAreas[i] = terminalOutputArea;
                             terminalNames[i] = terminalName;

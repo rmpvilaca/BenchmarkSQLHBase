@@ -79,9 +79,21 @@ public class jTPCCConsole implements jTPCCConfig, TerminalEndedTransactionListen
             try
             {
                 boolean limitIsTime = defaultRadioTime;
-                int numTerminals = -1, transactionsPerTerminal = -1, numWarehouses = -1;
+                int numTerminals = -1, transactionsPerTerminal = -1, numWarehouses = -1,startWarehouse=-1;
                 int paymentWeightValue = -1, orderStatusWeightValue = -1, deliveryWeightValue = -1, stockLevelWeightValue = -1;
                 long executionTimeMillis = -1;
+
+                try
+                {
+                    startWarehouse = Integer.parseInt(defaultStartWarehouse);
+                    if(startWarehouse <= 0)
+                        throw new NumberFormatException();
+                }
+                catch(NumberFormatException e1)
+                {
+                    errorMessage("Invalid number of warehouses!");
+                    throw new Exception();
+                }
 
                 try
                 {
@@ -195,7 +207,7 @@ public class jTPCCConsole implements jTPCCConfig, TerminalEndedTransactionListen
                         int terminalDistrictID;
                         do
                         {
-                            terminalWarehouseID = (int)randomNumber(1, numWarehouses);
+                            terminalWarehouseID = (int)randomNumber(startWarehouse, startWarehouse+numWarehouses-1);
                             terminalDistrictID = (int)randomNumber(1, 10);
                         }
                         while(usedTerminals[terminalWarehouseID-1][terminalDistrictID-1] == 1);
@@ -206,7 +218,7 @@ public class jTPCCConsole implements jTPCCConfig, TerminalEndedTransactionListen
                         printMessage("Creating database connection for " + terminalName + "...");
                         conn = DriverManager.getConnection(database, username, password);
                         conn.setAutoCommit(false);
-                        jTPCCTerminal terminal = new jTPCCTerminal(terminalName, terminalWarehouseID, terminalDistrictID, conn, transactionsPerTerminal, new PrintOutputStream(System.out), new PrintOutputStream(System.err), debugMessages, paymentWeightValue, orderStatusWeightValue, deliveryWeightValue, stockLevelWeightValue, numWarehouses, this);
+                        jTPCCTerminal terminal = new jTPCCTerminal(terminalName, terminalWarehouseID, terminalDistrictID, conn, transactionsPerTerminal, new PrintOutputStream(System.out), new PrintOutputStream(System.err), debugMessages, paymentWeightValue, orderStatusWeightValue, deliveryWeightValue, stockLevelWeightValue, startWarehouse,numWarehouses, this);
                         terminals[i] = terminal;
                         terminalNames[i] = terminalName;
                         printStreamReport.println(terminalName + "\t" + terminalWarehouseID);

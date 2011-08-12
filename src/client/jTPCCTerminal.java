@@ -28,7 +28,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
     private TerminalEndedTransactionListener listener;
     private Random  gen;
 
-    private int transactionCount = 1, numTransactions, numWarehouses, newOrderCounter;
+    private int transactionCount = 1, numTransactions,startWarehouse, numWarehouses, newOrderCounter;
     private StringBuffer query = null;
     private int result = 0;
     private boolean stopRunningSignal = false;
@@ -78,7 +78,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
       private PreparedStatement stockGetDistOrderId = null;
       private PreparedStatement stockGetCountStock = null;
 
-    public jTPCCTerminal(String terminalName, int terminalWarehouseID, int terminalDistrictID, Connection conn, int numTransactions, PrintOutput terminalOutputArea, PrintOutput errorOutputArea, boolean debugMessages, int paymentWeight, int orderStatusWeight, int deliveryWeight, int stockLevelWeight, int numWarehouses, TerminalEndedTransactionListener listener) throws SQLException
+    public jTPCCTerminal(String terminalName, int terminalWarehouseID, int terminalDistrictID, Connection conn, int numTransactions, PrintOutput terminalOutputArea, PrintOutput errorOutputArea, boolean debugMessages, int paymentWeight, int orderStatusWeight, int deliveryWeight, int stockLevelWeight, int startWarehouse,int numWarehouses, TerminalEndedTransactionListener listener) throws SQLException
     {
         this.terminalName = terminalName;
         this.conn = conn;
@@ -100,6 +100,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
         this.orderStatusWeight = orderStatusWeight;
         this.deliveryWeight = deliveryWeight;
         this.stockLevelWeight = stockLevelWeight;
+        this.startWarehouse=startWarehouse;
         this.numWarehouses = numWarehouses;
         this.newOrderCounter = 0;
         terminalMessage("Terminal \'" + terminalName + "\' has WarehouseID=" + terminalWarehouseID + " and DistrictID=" + terminalDistrictID + ".");
@@ -222,7 +223,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                     {
                         do
                         {
-                            supplierWarehouseIDs[i] = jTPCCUtil.randomNumber(1, numWarehouses, gen);
+                            supplierWarehouseIDs[i] = jTPCCUtil.randomNumber(startWarehouse, startWarehouse+numWarehouses-1, gen);
                         }
                         while(supplierWarehouseIDs[i] == terminalWarehouseID && numWarehouses > 1);
                         allLocal = 0;
@@ -255,7 +256,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                     customerDistrictID = jTPCCUtil.randomNumber(1, 10, gen);
                     do
                     {
-                        customerWarehouseID = jTPCCUtil.randomNumber(1, numWarehouses, gen);
+                        customerWarehouseID = jTPCCUtil.randomNumber(startWarehouse, startWarehouse+numWarehouses-1, gen);
                     }
                     while(customerWarehouseID == terminalWarehouseID && numWarehouses > 1);
                 }

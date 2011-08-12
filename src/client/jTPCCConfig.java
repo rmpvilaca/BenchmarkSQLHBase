@@ -31,6 +31,7 @@ public interface jTPCCConfig
     public final static String defaultDriver = "com.edb.Driver";
 
 
+    public final static String defaultStartWarehouse = "1";
     public final static String defaultNumWarehouses = "1";
     public final static String defaultNumTerminals = "1";
 

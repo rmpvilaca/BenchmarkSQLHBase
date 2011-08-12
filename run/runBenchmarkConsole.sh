@@ -4,4 +4,4 @@ for i in ../lib/*; do
 done
 
 
-$JAVA_HOME/bin/java -cp $CP:../dist/BenchmarkSQL-2.3.jar -Dprop=$1 client.jTPCCConsole
+$JAVA_HOME/bin/java -cp $CP:../dist/BenchmarkSQL-2.3.jar -Dprop=$1 client.jTPCCConsole  $2 $3 $4 $5 $6 $7

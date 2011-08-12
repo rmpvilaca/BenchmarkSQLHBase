@@ -29,10 +29,84 @@ public class jTPCCConsole implements jTPCCConfig, TerminalEndedTransactionListen
     private PrintStream printStreamReport;
     private String sessionStart, sessionEnd;
     private Properties ini;
+    private static int numWarehouses=-1,startWarehouse=-1,minutes=-1,numTerminals=-1;
 
 
     public static void main(String args[])
     {
+        try
+        {
+            startWarehouse = Integer.parseInt(defaultStartWarehouse);
+            if(startWarehouse <= 0)
+                throw new NumberFormatException();
+        }
+        catch(NumberFormatException e1)
+        {
+            errorMessage("Invalid number of warehouses!");
+        }
+
+        try
+        {
+            numWarehouses = Integer.parseInt(defaultNumWarehouses);
+            if(numWarehouses <= 0)
+                throw new NumberFormatException();
+        }
+        catch(NumberFormatException e1)
+        {
+            errorMessage("Invalid number of warehouses!");
+        }
+
+        try
+        {
+            minutes = Integer.parseInt(defaultMinutes);
+            if(minutes <= 0)
+                throw new NumberFormatException();
+        }
+        catch(NumberFormatException e1)
+        {
+            errorMessage("Invalid number of minutes!");
+        }
+
+        try
+        {
+            numTerminals = Integer.parseInt(defaultNumTerminals);
+            if(numTerminals <= 0 || numTerminals > 10*numWarehouses)
+                throw new NumberFormatException();
+        }
+        catch(NumberFormatException e1)
+        {
+            errorMessage("Invalid number of terminals!");
+        }
+
+        for (int i = 0; i < args.length; i++)
+        {
+            System.out.println(args[i]);
+            String str = args[i];
+            if (str.toLowerCase().startsWith("numWarehouses"))
+            {
+                String val = args[i + 1];
+                System.out.println("Setting the number of warehouses to: " + val);
+                numWarehouses = Integer.parseInt(val);
+            }
+            if (str.toLowerCase().startsWith("startWarehouse"))
+            {
+                String val = args[i + 1];
+                System.out.println("Setting the start warehouse to: " + val);
+                startWarehouse = Integer.parseInt(val);
+            }
+            if (str.toLowerCase().startsWith("minutes"))
+            {
+                String val = args[i + 1];
+                System.out.println("Setting the number of minutes to run the benchmark to: " + val);
+                minutes = Integer.parseInt(val);
+            }
+            if (str.toLowerCase().startsWith("numTerminals"))
+            {
+                String val = args[i + 1];
+                System.out.println("Setting the number of terminals to: " + val);
+                numTerminals = Integer.parseInt(val);
+            }
+        }
         new jTPCCConsole();
     }
 
@@ -79,61 +153,17 @@ public class jTPCCConsole implements jTPCCConfig, TerminalEndedTransactionListen
             try
             {
                 boolean limitIsTime = defaultRadioTime;
-                int numTerminals = -1, transactionsPerTerminal = -1, numWarehouses = -1,startWarehouse=-1;
+                int transactionsPerTerminal = -1;
                 int paymentWeightValue = -1, orderStatusWeightValue = -1, deliveryWeightValue = -1, stockLevelWeightValue = -1;
                 long executionTimeMillis = -1;
 
-                try
-                {
-                    startWarehouse = Integer.parseInt(defaultStartWarehouse);
-                    if(startWarehouse <= 0)
-                        throw new NumberFormatException();
-                }
-                catch(NumberFormatException e1)
-                {
-                    errorMessage("Invalid number of warehouses!");
-                    throw new Exception();
-                }
 
-                try
-                {
-                    numWarehouses = Integer.parseInt(defaultNumWarehouses);
-                    if(numWarehouses <= 0)
-                        throw new NumberFormatException();
-                }
-                catch(NumberFormatException e1)
-                {
-                    errorMessage("Invalid number of warehouses!");
-                    throw new Exception();
-                }
-
-                try
-                {
-                    numTerminals = Integer.parseInt(defaultNumTerminals);
-                    if(numTerminals <= 0 || numTerminals > 10*numWarehouses)
-                        throw new NumberFormatException();
-                }
-                catch(NumberFormatException e1)
-                {
-                    errorMessage("Invalid number of terminals!");
-                    throw new Exception();
-                }
 
                 boolean debugMessages = defaultDebugMessages;
 
                 if(limitIsTime)
                 {
-                    try
-                    {
-                        executionTimeMillis = Long.parseLong(defaultMinutes) * 60000;
-                        if(executionTimeMillis <= 0)
-                            throw new NumberFormatException();
-                    }
-                    catch(NumberFormatException e1)
-                    {
-                        errorMessage("Invalid number of minutes!");
-                        throw new Exception();
-                    }
+                    executionTimeMillis = minutes * 60000;
                 }
                 else
                 {
@@ -383,7 +413,7 @@ public class jTPCCConsole implements jTPCCConfig, TerminalEndedTransactionListen
         if(OUTPUT_MESSAGES) System.out.println("[BenchmarkSQL] " + message);
     }
 
-    private void errorMessage(String message)
+    private static void errorMessage(String message)
     {
         System.out.println("[ERROR] " + message);
     }

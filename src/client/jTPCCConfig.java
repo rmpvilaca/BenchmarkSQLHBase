@@ -15,7 +15,7 @@ public interface jTPCCConfig
     public final static String JTPCCVERSION = "2.3.2";
 
     public final static boolean OUTPUT_MESSAGES = true;
-    public final static boolean TERMINAL_MESSAGES = true;
+    public final static boolean TERMINAL_MESSAGES = false;
     public final static int NEW_ORDER = 1, PAYMENT = 2, ORDER_STATUS = 3, DELIVERY = 4, STOCK_LEVEL = 5;
 
     public final static String[] nameTokens = {"BAR", "OUGHT", "ABLE", "PRI", "PRES", "ESE", "ANTI", "CALLY", "ATION", "EING"};
@@ -35,10 +35,10 @@ public interface jTPCCConfig
     public final static String defaultNumWarehouses = "1";
     public final static String defaultNumTerminals = "1";
 
-    public final static String defaultPaymentWeight = "43";
-    public final static String defaultOrderStatusWeight = "4";
-    public final static String defaultDeliveryWeight = "4";
-    public final static String defaultStockLevelWeight = "4";
+    public final static String defaultPaymentWeight = "0";
+    public final static String defaultOrderStatusWeight = "100";
+    public final static String defaultDeliveryWeight = "0";
+    public final static String defaultStockLevelWeight = "0";
 
     public final static String defaultTransactionsPerTerminal = "1";
     public final static String defaultMinutes = "1";

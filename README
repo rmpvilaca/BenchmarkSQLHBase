@@ -36,10 +36,10 @@ Any special instructions by DBMS are prefaced  by <dbms_name>, else just substit
 
         $ runSQL derby.properties sqlTableCreates
 
-3. Run the "runSQL" command file to execute the SQL script "sqlIndexCreates" to 
-   create the primary keys & other indexes on the tables.
+3. Run the "runSQL" command file to execute the SQL script "sqlPKIndexCreates" to 
+   create the primary keys on the tables.
 
-        $  runSQL derby.properties sqlIndexCreates
+        $  runSQL derby.properties sqlPKIndexCreates
 
 4. Run the "loadData" command file to load all of the default data for a benchmark:
 
@@ -63,7 +63,12 @@ Any special instructions by DBMS are prefaced  by <dbms_name>, else just substit
       You may clean out the data in the tables without dropping them via:
         $  runSQL derby.properties sqlTableTruncates
 
-5. Run the benchmark:
+5. Run the "runSQL" command file to execute the SQL script "sqlSKIndexCreates" to 
+   create  other indexes on the tables.
+
+        $  runSQL derby.properties sqlSKIndexCreates
+
+6. Run the benchmark:
 
 
    A.) "runBenchmarkConsole" command file to execute the console application to
@@ -93,7 +98,7 @@ Any special instructions by DBMS are prefaced  by <dbms_name>, else just substit
        $  runBenchmark derby.properties
 
 
-6. Operational Notes to minimize GUI problems:  
+7. Operational Notes to minimize GUI problems:  
    (a) executing runBenchmark will start the GUI. 
        Click the Database button to view properties file settings. No changes are needed if the properties settings are correct.
        Click the Terminals button and specify desired settings. 

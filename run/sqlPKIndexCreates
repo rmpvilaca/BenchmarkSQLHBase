@@ -1,4 +1,3 @@
-
 alter table TUPLEwarehouse add constraint pk_warehouse 
   primary key (w_id);  
 commit;  
@@ -11,20 +10,13 @@ commit;
 alter table TUPLEcustomer add constraint pk_customer 
   primary key (c_w_id, c_d_id, c_id);
 commit;
-create index TUPLEndx_customer_name 
-  on TUPLEcustomer (c_w_id, c_d_id, c_last, c_first);
-commit;
 
 
 -- history table has no primary key
 -- commit;
 
-
 alter table TUPLEoorder add constraint pk_oorder 
   primary key (o_w_id, o_d_id, o_id);
-commit;
-create unique index TUPLEndx_oorder_carrier 
-  on TUPLEoorder (o_w_id, o_d_id, o_carrier_id, o_id);
 commit;
 
  
@@ -46,9 +38,5 @@ commit;
 alter table TUPLEitem add constraint pk_item
   primary key (i_id);
 commit;
-
-vacuum analyze; 
-
-  
 
  

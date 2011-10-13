@@ -885,7 +885,11 @@ static void initJDBC() {
               str = str + customer.c_city + ",";
               str = str + customer.c_state + ",";
               str = str + customer.c_zip + ",";
-              str = str + customer.c_phone;
+              str = str + customer.c_phone + ",";
+              Timestamp csince = new Timestamp(customer.c_since);
+	      str = str + csince+ ",";
+              str = str + customer.c_middle+ ",";
+              str = str + customer.c_data;
               out.println(str);
 
               str = "";

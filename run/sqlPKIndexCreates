@@ -12,8 +12,9 @@ alter table TUPLEcustomer add constraint pk_customer
 commit;
 
 
--- history table has no primary key
--- commit;
+alter table TUPLEhistory add constraint pk_history 
+ primary key (h_date, h_c_id);
+commit;
 
 alter table TUPLEoorder add constraint pk_oorder 
   primary key (o_w_id, o_d_id, o_id);

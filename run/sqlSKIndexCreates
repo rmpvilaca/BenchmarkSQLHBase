@@ -2,7 +2,7 @@ create index TUPLEndx_customer_name
   on TUPLEcustomer (c_w_id, c_d_id, c_last, c_first);
 commit;
 
-create unique index TUPLEndx_oorder_carrier 
-  on TUPLEoorder (o_w_id, o_d_id, o_carrier_id, o_id);
+create unique index TUPLEndx_oorder_customer 
+  on TUPLEoorder (o_w_id, o_d_id, o_c_id, o_id);
 commit;
 

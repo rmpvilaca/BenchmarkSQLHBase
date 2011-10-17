@@ -10,7 +10,6 @@ create table TUPLEwarehouse (
   w_state     char(2),
   w_zip       char(9)
 );
-commit;
 
 create table TUPLEdistrict (
   d_w_id       integer       not null,
@@ -25,7 +24,6 @@ create table TUPLEdistrict (
   d_state      char(2),
   d_zip        char(9)
 );
-commit;
 
 
 create table TUPLEcustomer (
@@ -51,20 +49,18 @@ create table TUPLEcustomer (
   c_middle       char(2),
   c_data         varchar(500)
 );
-commit;
 
 
 create table TUPLEhistory (
-  h_c_id   integer,
+  h_c_id   integer not null,
   h_c_d_id integer,
   h_c_w_id integer,
   h_d_id   integer,
   h_w_id   integer,
-  h_date   timestamp,
+  h_date   timestamp not null,
   h_amount decimal(6,2),
   h_data   varchar(24)
 );
-commit;
 
 
 create table TUPLEoorder (
@@ -77,7 +73,6 @@ create table TUPLEoorder (
   o_all_local  decimal(1,0),
   o_entry_d    timestamp
 );
-commit;
 
 
 create table TUPLEnew_order (
@@ -85,7 +80,6 @@ create table TUPLEnew_order (
   no_d_id  integer   not null,
   no_o_id  integer   not null
 );
-commit;
 
 
 create table TUPLEorder_line (
@@ -100,7 +94,6 @@ create table TUPLEorder_line (
   ol_quantity     decimal(2,0),
   ol_dist_info    char(24)
 );
-commit;
 
 
 create table TUPLEstock (
@@ -122,7 +115,6 @@ create table TUPLEstock (
   s_dist_09    char(24),
   s_dist_10    char(24)
 );
-commit;
 
 
 create table TUPLEitem (
@@ -132,5 +124,4 @@ create table TUPLEitem (
   i_data   varchar(50),
   i_im_id  integer
 );
-commit;
 

@@ -35,10 +35,10 @@ public interface jTPCCConfig
     public final static String defaultNumWarehouses = "1";
     public final static String defaultNumTerminals = "1";
 
-    public final static String defaultPaymentWeight = "0";
-    public final static String defaultOrderStatusWeight = "100";
-    public final static String defaultDeliveryWeight = "0";
-    public final static String defaultStockLevelWeight = "0";
+    public final static String defaultPaymentWeight = "43";
+    public final static String defaultOrderStatusWeight = "4";
+    public final static String defaultDeliveryWeight = "4";
+    public final static String defaultStockLevelWeight = "4";
 
     public final static String defaultTransactionsPerTerminal = "1";
     public final static String defaultMinutes = "1";

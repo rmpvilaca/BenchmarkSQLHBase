@@ -612,7 +612,6 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
             }
 
             // find the newest order for the customer
-            /*
             if (ordStatGetNewestOrd == null) {
               ordStatGetNewestOrd = conn.prepareStatement(
                 "SELECT MAX(o_id) AS maxorderid FROM TUPLEoorder" +
@@ -624,11 +623,11 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
             ordStatGetNewestOrd.setInt(2, d_id);
             ordStatGetNewestOrd.setInt(3, c_id);
             rs = ordStatGetNewestOrd.executeQuery();
-            */
-            if(true)//rs.next())
+            if(rs.next())
             {
-              o_id = 10;//rs.getInt("maxorderid");
-              //rs.close();
+              //o_id = 10;
+              o_id=rs.getInt("maxorderid");
+              rs.close();
               rs = null;
 
               // retrieve the carrier & order date for the most recent order.
@@ -1083,7 +1082,8 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
             try {
                 terminalMessage("Performing ROLLBACK in NEW-ORDER Txn...");
                 transRollback();
-                stmtInsertOrderLine.clearBatch();
+                if (stmtInsertOrderLine!=null)
+                	stmtInsertOrderLine.clearBatch();
                 stmtUpdateStock.clearBatch();
             } catch(Exception e1){
                 error("NEW-ORDER-ROLLBACK");

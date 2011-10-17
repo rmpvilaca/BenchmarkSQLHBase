@@ -80,32 +80,30 @@ public class jTPCCConsole implements jTPCCConfig, TerminalEndedTransactionListen
 
         for (int i = 0; i < args.length; i++)
         {
-            System.out.println(args[i]);
+ 	    System.out.println(args[i]);
             String str = args[i];
-            if (str.toLowerCase().startsWith("numWarehouses"))
+            if (str.startsWith("numWarehouses"))
             {
                 String val = args[i + 1];
                 System.out.println("Setting the number of warehouses to: " + val);
                 numWarehouses = Integer.parseInt(val);
-            }
-            if (str.toLowerCase().startsWith("startWarehouse"))
+            }else if (str.startsWith("startWarehouse"))
             {
                 String val = args[i + 1];
                 System.out.println("Setting the start warehouse to: " + val);
                 startWarehouse = Integer.parseInt(val);
-            }
-            if (str.toLowerCase().startsWith("minutes"))
+            }else if (str.startsWith("minutes"))
             {
                 String val = args[i + 1];
                 System.out.println("Setting the number of minutes to run the benchmark to: " + val);
                 minutes = Integer.parseInt(val);
-            }
-            if (str.toLowerCase().startsWith("numTerminals"))
+            }else if (str.startsWith("numTerminals"))
             {
                 String val = args[i + 1];
                 System.out.println("Setting the number of terminals to: " + val);
                 numTerminals = Integer.parseInt(val);
             }
+            i++;
         }
         new jTPCCConsole();
     }

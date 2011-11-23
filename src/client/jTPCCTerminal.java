@@ -359,7 +359,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                       delivGetOrderId = conn.prepareStatement(
                         "SELECT no_o_id FROM TUPLEnew_order WHERE no_d_id = ?" +
                         " AND no_w_id = ?" +
-                        " ORDER BY no_o_id ASC");
+                        " ORDER BY no_o_id ASC FETCH FIRST 1 ROW ONLY");
                     }
                     delivGetOrderId.setInt(1, d_id);
                     delivGetOrderId.setInt(2, w_id);
@@ -570,7 +570,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                     " WHERE c_last = ?" +
                     " AND c_d_id = ?" +
                     " AND c_w_id = ?" +
-                    " ORDER BY c_w_id, c_d_id, c_last, c_first");
+                    " ORDER BY c_w_id, c_d_id, c_last, c_first FETCH FIRST 1 ROW ONLY");
                 }
                 ordStatGetCust.setString(1, c_last);
                 ordStatGetCust.setInt(2, d_id);

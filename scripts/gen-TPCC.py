@@ -48,12 +48,12 @@ def main(args):
 		outL.close()
 		inT="TPCC-throughput"
 		inL="TPCC-latency"
-		mColor=[color.cmyk.Yellow,color.cmyk.Orange ,color.cmyk.Red,color.cmyk.Violet,color.cmyk.Blue,color.cmyk.Green,color.cmyk.Sepia ,color.cmyk.Brown, color.cmyk.Gray, color.cmyk.Black]
-		gT =graph.graphxy(width=8,key=graph.key.key(pos="br", dist=0.1), x=graph.axis.linear(min=0,max=50,title="Clients"),  y=graph.axis.linear(min=0,max=2000,title="Throughput (ops/min)"))
-		gT.plot([graph.data.file(inT+".dat", x=1, y=2,title=t)],[graph.style.symbol(symbolattrs=[attr.changelist(mColor)]),graph.style.line([attr.changelist(mColor),style.linewidth.Thick])])
+		mColor=[color.cmyk.Green,color.cmyk.Orange ,color.cmyk.Red,color.cmyk.Violet,color.cmyk.Blue,color.cmyk.Yellow,color.cmyk.Sepia ,color.cmyk.Brown, color.cmyk.Gray, color.cmyk.Black]
+		gT =graph.graphxy(width=8, x=graph.axis.linear(min=0,max=50,title="Clients"),  y=graph.axis.linear(min=0,max=2000,title="Throughput (ops/min)"))
+		gT.plot([graph.data.file(inT+".dat", x=1, y=2)],[graph.style.symbol(symbolattrs=[attr.changelist(mColor)]),graph.style.line([attr.changelist(mColor),style.linewidth.Thick])])
 		gT.writePDFfile(inT)
 		gT.writeEPSfile(inT)
-		gL =graph.graphxy(width=8,key=graph.key.key(pos="br", dist=0.1), x=graph.axis.linear(min=0,max=50,title="Clients"),  y=graph.axis.linear(title="Latency (ms)"))
+		gL =graph.graphxy(width=8,key=graph.key.key(pos="tl", dist=0.1), x=graph.axis.linear(min=0,max=50,title="Clients"),  y=graph.axis.linear(title="Latency (ms)"))
 		lL=[]
 		i=2
 		for t in types:

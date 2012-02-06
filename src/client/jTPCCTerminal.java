@@ -570,7 +570,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                     " WHERE c_last = ?" +
                     " AND c_d_id = ?" +
                     " AND c_w_id = ?" +
-                    " ORDER BY c_w_id, c_d_id, c_last, c_first FETCH FIRST 1 ROW ONLY");
+                    " ORDER BY c_w_id, c_d_id, c_last, c_first");
                 }
                 ordStatGetCust.setString(1, c_last);
                 ordStatGetCust.setInt(2, d_id);
@@ -579,6 +579,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
 
                 if(!rs.next()) throw new Exception("C_LAST=" + c_last + " C_D_ID=" + d_id + " C_W_ID=" + w_id + " not found!");
                 if(namecnt%2 == 1) namecnt++;
+		
                 for(int i = 1; i < namecnt / 2; i++) rs.next();
                 c_id = rs.getInt("c_id");
                 c_first = rs.getString("c_first");

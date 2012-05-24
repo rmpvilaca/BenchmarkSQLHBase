@@ -884,7 +884,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                   }
                   stmtGetItem.setInt(1, ol_i_id);
                   rs = stmtGetItem.executeQuery();
-                  if(!rs.next()) throw new IllegalAccessException("I_ID=" + ol_i_id + " not found!");
+                  if(!rs.next()) throw new IllegalAccessException("ITEM I_ID=" + ol_i_id + " not found!");
                   i_price = rs.getFloat("i_price");
                   i_name = rs.getString("i_name");
                   i_data = rs.getString("i_data");
@@ -903,7 +903,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                 stmtGetStock.setInt(1, ol_i_id);
                 stmtGetStock.setInt(2, ol_supply_w_id);
                 rs = stmtGetStock.executeQuery();
-                if(!rs.next()) throw new Exception("I_ID=" + ol_i_id + " not found!");
+                if(!rs.next()) throw new Exception("STOCK I_ID=" + ol_i_id + " not found!");
                 s_quantity = rs.getInt("s_quantity");
                 s_data = rs.getString("s_data");
                 s_dist_01 = rs.getString("s_dist_01");

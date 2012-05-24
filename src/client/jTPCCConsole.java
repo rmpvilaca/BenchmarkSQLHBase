@@ -238,8 +238,8 @@ public class jTPCCConsole implements jTPCCConfig, TerminalEndedTransactionListen
                             terminalWarehouseID = (int)randomNumber(startWarehouse, startWarehouse+numWarehouses-1);
                             terminalDistrictID = (int)randomNumber(1, 10);
                         }
-                        while(usedTerminals[terminalWarehouseID-1][terminalDistrictID-1] == 1);
-                        usedTerminals[terminalWarehouseID-1][terminalDistrictID-1] = 1;
+                        while(usedTerminals[terminalWarehouseID-startWarehouse][terminalDistrictID-1] == 1);
+                        usedTerminals[terminalWarehouseID-startWarehouse][terminalDistrictID-1] = 1;
 
                         String terminalName = terminalPrefix + (i>=9 ? ""+(i+1) : "0"+(i+1));
                         Connection conn = null;

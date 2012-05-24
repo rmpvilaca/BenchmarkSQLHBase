@@ -3,7 +3,7 @@ Change Log:
 
 12/08/2011 rmpvilaca  - Add startWarehouse parameter to allow multiple benchmark instances on disjoint warehouses. 
 05/08/2011 rmpvilaca  - Add console version.
-05/08/2011 ivankelly  - Modified to run with modified Derby version atop HBase, DQE+SO. 
+05/08/2011 ivankelly  - Modified to run with Derby.
 
 *****************************************************************************************
 
@@ -34,12 +34,12 @@ Any special instructions by DBMS are prefaced  by <dbms_name>, else just substit
 
 2. Run the "sqlTableCreates" to create the base tables.
 
-        $ runSQL derbySQL.properties sqlTableCreates
+        $ runSQL.sh derbySQL.properties sqlTableCreates
 
-3. Run the "runSQL" command file to execute the SQL script "sqlPKIndexCreates" to 
+3. Run the "runSQL.sh" command file to execute the SQL script "sqlPKIndexCreates" to 
    create the primary keys on the tables.
 
-        $  runSQL derbySQL.properties sqlPKIndexCreates
+        $  runSQL.sh derbySQL.properties sqlPKIndexCreates
 
 4. Run the "loadData" command file to load all of the default data for a benchmark:
 
@@ -51,43 +51,43 @@ Any special instructions by DBMS are prefaced  by <dbms_name>, else just substit
       Note: "loadData" will truncate all tables prior to inserting data through the JDBC program
       
       There is also a "sqlTableDrops" script  if you need it. If needed, run
-         $ runSQL derbySQL.properties sqlTableDrops
+         $ runSQL.sh derbySQL.properties sqlTableDrops
 
   B.) Alternatively, you may choose to generate the load data out to CSV files that can be 
       bulk loaded as follows:
         $ loadData derbySQL.properties numWarehouses 10 fileLocation ./csv/      (directory BenchmarkSQL-2.3.2/run/csv used in this example)
         
       These CSV files can be bulk loaded into Derby via the following:
-        $  runSQL derbySQL.properties sqlTableCopies_Derby
+        $  runSQL.sh derbySQL.properties sqlTableCopies_Derby
 
       You may clean out the data in the tables without dropping them via:
-        $  runSQL derbySQL.properties sqlTableTruncates
+        $  runSQL.sh derbySQL.properties sqlTableTruncates
 
-5. Run the "runSQL" command file to execute the SQL script "sqlSKIndexCreates" to 
+5. Run the "runSQL.sh" command file to execute the SQL script "sqlSKIndexCreates" to 
    create  other indexes on the tables.
 
-        $  runSQL derbySQL.properties sqlSKIndexCreates
+        $  runSQL.sh derbySQL.properties sqlSKIndexCreates
 
 6. Run the benchmark:
 
 
-   A.) "runBenchmarkConsole" command file to execute the console application to
+   A.) "runBenchmarkConsole.sh" command file to execute the console application to
    test the database.  All the parameters to the benchmark (startWarehouse, numWarehouses, numTerminals, default weight per transaction type, minutes, numTerminals) will be the default ones defined in jTPCCConfig.
    For each run, a report will be placed in run/reports.
    A sample report is included."
 
-       $  runBenchmarkConsole derbySQL.properties
+       $  runBenchmarkConsole.sh derbySQL.properties
      
    The following parameters can be configured from the script in any order and number as follows;
 
-       $  runBenchmarkConsole derbySQL.properties minutes 45 numTerminals 10 numWarehouses 10 startWarehouse 1
+       $  runBenchmarkConsole.sh derbySQL.properties minutes 45 numTerminals 10 numWarehouses 10 startWarehouse 1
 
    The numWarehouses and startWarehouse are useful to configure several instances of the benchmark with disjoint warehouses. 
    For example with 100 warehouses and 4 benchmark intances they should be run as:
-       $  runBenchmarkConsole derbySQL.properties numWarehouses 25 startWarehouse 1
-       $  runBenchmarkConsole derbySQL.properties numWarehouses 25 startWarehouse 26
-       $  runBenchmarkConsole derbySQL.properties numWarehouses 25 startWarehouse 51
-       $  runBenchmarkConsole derbySQL.properties numWarehouses 25 startWarehouse 76
+       $  runBenchmarkConsole.sh derbySQL.properties numWarehouses 25 startWarehouse 1
+       $  runBenchmarkConsole.sh derbySQL.properties numWarehouses 25 startWarehouse 26
+       $  runBenchmarkConsole.sh derbySQL.properties numWarehouses 25 startWarehouse 51
+       $  runBenchmarkConsole.sh derbySQL.properties numWarehouses 25 startWarehouse 76
 
 
    B.) Alternatively, "runBenchmark" command file to execute the swing GUI application to 
@@ -95,7 +95,7 @@ Any special instructions by DBMS are prefaced  by <dbms_name>, else just substit
    number you created in step 3. For each run, a report will be placed in run/reports.
    A sample report is included.
 
-       $  runBenchmark derbySQL.properties
+       $  runBenchmark.sh derbySQL.properties
 
 
 7. Operational Notes to minimize GUI problems:  

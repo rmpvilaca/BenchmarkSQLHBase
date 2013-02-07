@@ -9,14 +9,14 @@ Change Log:
 
 
 
-Instructions for building
+# Instructions for building
 -------------------------
 
 Use of JDK 1.5 is recommended, build with "ant jar" from the command line of 
 the base directory or use your favorite IDE such as Netbeans or Eclipse.  
 
 
-Instructions for running
+# Instructions for running
 ------------------------
 The below scripts all use relative paths, but, they depend on JAVA_HOME
 environment variable being set so that the correct runtime can be found.
@@ -84,10 +84,10 @@ Any special instructions by DBMS are prefaced  by <dbms_name>, else just substit
 
    The numWarehouses and startWarehouse are useful to configure several instances of the benchmark with disjoint warehouses. 
    For example with 100 warehouses and 4 benchmark intances they should be run as:
-       $  runBenchmarkConsole.sh derbySQL.properties numWarehouses 25 startWarehouse 1
-       $  runBenchmarkConsole.sh derbySQL.properties numWarehouses 25 startWarehouse 26
-       $  runBenchmarkConsole.sh derbySQL.properties numWarehouses 25 startWarehouse 51
-       $  runBenchmarkConsole.sh derbySQL.properties numWarehouses 25 startWarehouse 76
+       $  runBenchmarkConsole.sh derbySQL.properties numTerminals 250 numWarehouses 25 startWarehouse 1
+       $  runBenchmarkConsole.sh derbySQL.properties numTerminals 250 numWarehouses 25 startWarehouse 26
+       $  runBenchmarkConsole.sh derbySQL.properties numTerminals 250 numWarehouses 25 startWarehouse 51
+       $  runBenchmarkConsole.sh derbySQL.properties numTerminals 250 numWarehouses 25 startWarehouse 76
 
 
    B.) Alternatively, "runBenchmark" command file to execute the swing GUI application to 
@@ -110,3 +110,16 @@ Any special instructions by DBMS are prefaced  by <dbms_name>, else just substit
    (c) If the benchmark runs properly, all database connections are terminated at completion. You may need to manually
        terminate connections if this is not the case
    (d) When done, close the GUI window 
+
+
+# Feedback
+
+Updated source and an issue tracker are available at:
+
+        https://github.com/rmpvilaca/BenchmarkSQLHBase
+
+Your feedback is welcome.
+
+#Contact
+
+Ricardo Vilaca (<rmvilaca@di.uminho.pt>)

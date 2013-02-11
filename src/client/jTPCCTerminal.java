@@ -29,54 +29,55 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
     private Random  gen;
 
     private int transactionCount = 1, numTransactions,startWarehouse, numWarehouses, newOrderCounter;
+    private int abortCount=0,commitCount=0;
     private StringBuffer query = null;
     private int result = 0;
     private boolean stopRunningSignal = false;
 
     //NewOrder Txn
-      private PreparedStatement stmtGetCustWhse = null;
-      private PreparedStatement stmtGetDist = null;
-      private PreparedStatement stmtInsertNewOrder = null;
-      private PreparedStatement stmtUpdateDist = null;
-      private PreparedStatement stmtInsertOOrder = null;
-      private PreparedStatement stmtGetItem = null;
-      private PreparedStatement stmtGetStock = null;
-      private PreparedStatement stmtUpdateStock = null;
-      private PreparedStatement stmtInsertOrderLine = null;
+    private PreparedStatement stmtGetCustWhse = null;
+    private PreparedStatement stmtGetDist = null;
+    private PreparedStatement stmtInsertNewOrder = null;
+    private PreparedStatement stmtUpdateDist = null;
+    private PreparedStatement stmtInsertOOrder = null;
+    private PreparedStatement stmtGetItem = null;
+    private PreparedStatement stmtGetStock = null;
+    private PreparedStatement stmtUpdateStock = null;
+    private PreparedStatement stmtInsertOrderLine = null;
 
     //Payment Txn
-      private PreparedStatement payUpdateWhse = null;
-      private PreparedStatement payGetWhse = null;
-      private PreparedStatement payUpdateDist = null;
-      private PreparedStatement payGetDist = null;
-      private PreparedStatement payCountCust = null;
-      private PreparedStatement payCursorCustByName = null;
-      private PreparedStatement payGetCust = null;
-      private PreparedStatement payGetCustCdata = null;
-      private PreparedStatement payUpdateCustBalCdata = null;
-      private PreparedStatement payUpdateCustBal = null;
-      private PreparedStatement payInsertHist = null;
+    private PreparedStatement payUpdateWhse = null;
+    private PreparedStatement payGetWhse = null;
+    private PreparedStatement payUpdateDist = null;
+    private PreparedStatement payGetDist = null;
+    private PreparedStatement payCountCust = null;
+    private PreparedStatement payCursorCustByName = null;
+    private PreparedStatement payGetCust = null;
+    private PreparedStatement payGetCustCdata = null;
+    private PreparedStatement payUpdateCustBalCdata = null;
+    private PreparedStatement payUpdateCustBal = null;
+    private PreparedStatement payInsertHist = null;
 
     //Order Status Txn
-      private PreparedStatement ordStatCountCust = null;
-      private PreparedStatement ordStatGetCust = null;
-      private PreparedStatement ordStatGetNewestOrd = null;
-      private PreparedStatement ordStatGetCustBal = null;
-      private PreparedStatement ordStatGetOrder = null;
-      private PreparedStatement ordStatGetOrderLines = null;
+    private PreparedStatement ordStatCountCust = null;
+    private PreparedStatement ordStatGetCust = null;
+    private PreparedStatement ordStatGetNewestOrd = null;
+    private PreparedStatement ordStatGetCustBal = null;
+    private PreparedStatement ordStatGetOrder = null;
+    private PreparedStatement ordStatGetOrderLines = null;
 
     //Delivery Txn
-      private PreparedStatement delivGetOrderId = null;
-      private PreparedStatement delivDeleteNewOrder = null;
-      private PreparedStatement delivGetCustId = null;
-      private PreparedStatement delivUpdateCarrierId = null;
-      private PreparedStatement delivUpdateDeliveryDate = null;
-      private PreparedStatement delivSumOrderAmount = null;
-      private PreparedStatement delivUpdateCustBalDelivCnt = null;
+    private PreparedStatement delivGetOrderId = null;
+    private PreparedStatement delivDeleteNewOrder = null;
+    private PreparedStatement delivGetCustId = null;
+    private PreparedStatement delivUpdateCarrierId = null;
+    private PreparedStatement delivUpdateDeliveryDate = null;
+    private PreparedStatement delivSumOrderAmount = null;
+    private PreparedStatement delivUpdateCustBalDelivCnt = null;
 
     //Stock Level Txn
-      private PreparedStatement stockGetDistOrderId = null;
-      private PreparedStatement stockGetCountStock = null;
+    private PreparedStatement stockGetDistOrderId = null;
+    private PreparedStatement stockGetCountStock = null;
 
     public jTPCCTerminal(String terminalName, int terminalWarehouseID, int terminalDistrictID, Connection conn, int numTransactions, PrintOutput terminalOutputArea, PrintOutput errorOutputArea, boolean debugMessages, int paymentWeight, int orderStatusWeight, int deliveryWeight, int stockLevelWeight, int startWarehouse,int numWarehouses, TerminalEndedTransactionListener listener) throws SQLException
     {
@@ -176,7 +177,6 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
             {
                 executeTransaction(NEW_ORDER);
                 transactionTypeName = "New-Order";
-                newOrderCounter++;
                 newOrder = 1;
             }
 
@@ -266,14 +266,14 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                 String customerLastName = null;
                 customerID = -1;
 //                if(y <= 60)  {
-                    // 60% lookups by last name
+                // 60% lookups by last name
 //                    customerByName = true;
 //                    customerLastName = jTPCCUtil.getLastName(gen);
 //                    printMessage("Last name lookup = " + customerLastName);
 //                } else {
 //                    // 40% lookups by customer ID
-                    customerByName = false;
-                    customerID = jTPCCUtil.getCustomerID(gen);
+                customerByName = false;
+                customerID = jTPCCUtil.getCustomerID(gen);
 //                }
 
                 float paymentAmount = (float)(jTPCCUtil.randomNumber(100, 500000, gen)/100.0);
@@ -356,10 +356,10 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                     no_o_id = -1;
 
                     if (delivGetOrderId == null) {
-                      delivGetOrderId = conn.prepareStatement(
-                        "SELECT no_o_id FROM TUPLEnew_order WHERE no_d_id = ?" +
-                        " AND no_w_id = ?" +
-                        " ORDER BY no_o_id ASC FETCH FIRST 1 ROW ONLY");
+                        delivGetOrderId = conn.prepareStatement(
+                                "SELECT no_o_id FROM TUPLEnew_order WHERE no_d_id = ?" +
+                                        " AND no_w_id = ?" +
+                                        " ORDER BY no_o_id ASC FETCH FIRST 1 ROW ONLY");
                     }
                     delivGetOrderId.setInt(1, d_id);
                     delivGetOrderId.setInt(2, w_id);
@@ -372,21 +372,21 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                     newOrderRemoved = false;
                     if(no_o_id != -1)
                     {
-                      new_order.no_o_id = no_o_id;
+                        new_order.no_o_id = no_o_id;
 
-                      if (delivDeleteNewOrder == null) {
-                        delivDeleteNewOrder = conn.prepareStatement(
-                          "DELETE FROM TUPLEnew_order" +
-                          " WHERE no_d_id = ?" +
-                          " AND no_w_id = ?" +
-                          " AND no_o_id = ?");
-                      }
-                      delivDeleteNewOrder.setInt(1, d_id);
-                      delivDeleteNewOrder.setInt(2, w_id);
-                      delivDeleteNewOrder.setInt(3, no_o_id);
-                      result = delivDeleteNewOrder.executeUpdate();
+                        if (delivDeleteNewOrder == null) {
+                            delivDeleteNewOrder = conn.prepareStatement(
+                                    "DELETE FROM TUPLEnew_order" +
+                                            " WHERE no_d_id = ?" +
+                                            " AND no_w_id = ?" +
+                                            " AND no_o_id = ?");
+                        }
+                        delivDeleteNewOrder.setInt(1, d_id);
+                        delivDeleteNewOrder.setInt(2, w_id);
+                        delivDeleteNewOrder.setInt(3, no_o_id);
+                        result = delivDeleteNewOrder.executeUpdate();
 
-                      if(result > 0) newOrderRemoved = true;
+                        if(result > 0) newOrderRemoved = true;
                     }
                 }
                 while(no_o_id != -1 && !newOrderRemoved);
@@ -394,79 +394,79 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
 
                 if(no_o_id != -1)
                 {
-                      if (delivGetCustId == null) {
+                    if (delivGetCustId == null) {
                         delivGetCustId = conn.prepareStatement(
-                          "SELECT o_c_id" +
-                          " FROM TUPLEoorder" +
-                          " WHERE o_id = ?" +
-                          " AND o_d_id = ?" +
-                          " AND o_w_id = ?");
-                      }
-                      delivGetCustId.setInt(1, no_o_id);
-                      delivGetCustId.setInt(2, d_id);
-                      delivGetCustId.setInt(3, w_id);
-                      rs = delivGetCustId.executeQuery();
+                                "SELECT o_c_id" +
+                                        " FROM TUPLEoorder" +
+                                        " WHERE o_id = ?" +
+                                        " AND o_d_id = ?" +
+                                        " AND o_w_id = ?");
+                    }
+                    delivGetCustId.setInt(1, no_o_id);
+                    delivGetCustId.setInt(2, d_id);
+                    delivGetCustId.setInt(3, w_id);
+                    rs = delivGetCustId.executeQuery();
 
-                      if(!rs.next()) throw new Exception("O_ID=" + no_o_id + " O_D_ID=" + d_id + " O_W_ID=" + w_id + " not found!");
-                      c_id = rs.getInt("o_c_id");
-                      rs.close();
-                      rs = null;
+                    if(!rs.next()) throw new Exception("O_ID=" + no_o_id + " O_D_ID=" + d_id + " O_W_ID=" + w_id + " not found!");
+                    c_id = rs.getInt("o_c_id");
+                    rs.close();
+                    rs = null;
 
-                      if (delivUpdateCarrierId == null) {
+                    if (delivUpdateCarrierId == null) {
                         delivUpdateCarrierId = conn.prepareStatement(
-                          "UPDATE TUPLEoorder SET o_carrier_id = ?" +
-                          " WHERE o_id = ?" +
-                          " AND o_d_id = ?" +
-                          " AND o_w_id = ?");
-                      }
-                      delivUpdateCarrierId.setInt(1, o_carrier_id);
-                      delivUpdateCarrierId.setInt(2, no_o_id);
-                      delivUpdateCarrierId.setInt(3, d_id);
-                      delivUpdateCarrierId.setInt(4, w_id);
-                      result = delivUpdateCarrierId.executeUpdate();
+                                "UPDATE TUPLEoorder SET o_carrier_id = ?" +
+                                        " WHERE o_id = ?" +
+                                        " AND o_d_id = ?" +
+                                        " AND o_w_id = ?");
+                    }
+                    delivUpdateCarrierId.setInt(1, o_carrier_id);
+                    delivUpdateCarrierId.setInt(2, no_o_id);
+                    delivUpdateCarrierId.setInt(3, d_id);
+                    delivUpdateCarrierId.setInt(4, w_id);
+                    result = delivUpdateCarrierId.executeUpdate();
 
                     if(result != 1) throw new Exception("O_ID=" + no_o_id + " O_D_ID=" + d_id + " O_W_ID=" + w_id + " not found!");
 
-                      if (delivUpdateDeliveryDate == null) {
+                    if (delivUpdateDeliveryDate == null) {
                         delivUpdateDeliveryDate = conn.prepareStatement(
-                          "UPDATE TUPLEorder_line SET ol_delivery_d = ?" +
-                          " WHERE ol_o_id = ?" +
-                          " AND ol_d_id = ?" +
-                          " AND ol_w_id = ?");
-                      }
-                      delivUpdateDeliveryDate.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-                      delivUpdateDeliveryDate.setInt(2,no_o_id);
-                      delivUpdateDeliveryDate.setInt(3,d_id);
-                      delivUpdateDeliveryDate.setInt(4,w_id);
-                      result = delivUpdateDeliveryDate.executeUpdate();
+                                "UPDATE TUPLEorder_line SET ol_delivery_d = ?" +
+                                        " WHERE ol_o_id = ?" +
+                                        " AND ol_d_id = ?" +
+                                        " AND ol_w_id = ?");
+                    }
+                    delivUpdateDeliveryDate.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+                    delivUpdateDeliveryDate.setInt(2,no_o_id);
+                    delivUpdateDeliveryDate.setInt(3,d_id);
+                    delivUpdateDeliveryDate.setInt(4,w_id);
+                    result = delivUpdateDeliveryDate.executeUpdate();
 
-                      if(result == 0) throw new Exception("OL_O_ID=" + no_o_id + " OL_D_ID=" + d_id + " OL_W_ID=" + w_id + " not found!");
+                    if(result == 0) throw new Exception("OL_O_ID=" + no_o_id + " OL_D_ID=" + d_id + " OL_W_ID=" + w_id + " not found!");
 
-                      if (delivSumOrderAmount == null) {
+                    if (delivSumOrderAmount == null) {
                         delivSumOrderAmount = conn.prepareStatement(
-                          "SELECT SUM(ol_amount) AS ol_total" +
-                          " FROM TUPLEorder_line" +
-                          " WHERE ol_o_id = ?" +
-                          " AND ol_d_id = ?" +
-                          " AND ol_w_id = ?");
-                      }
-                      delivSumOrderAmount.setInt(1, no_o_id);
-                      delivSumOrderAmount.setInt(2, d_id);
-                      delivSumOrderAmount.setInt(3, w_id);
-                      rs = delivSumOrderAmount.executeQuery();
+                                "SELECT SUM(ol_amount) AS ol_total" +
+                                        " FROM TUPLEorder_line" +
+                                        " WHERE ol_o_id = ?" +
+                                        " AND ol_d_id = ?" +
+                                        " AND ol_w_id = ?");
+                    }
+                    delivSumOrderAmount.setInt(1, no_o_id);
+                    delivSumOrderAmount.setInt(2, d_id);
+                    delivSumOrderAmount.setInt(3, w_id);
+                    rs = delivSumOrderAmount.executeQuery();
 
-                      if(!rs.next()) throw new Exception("OL_O_ID=" + no_o_id + " OL_D_ID=" + d_id + " OL_W_ID=" + w_id + " not found!");
-                      ol_total = rs.getFloat("ol_total");
-                      rs.close();
-                      rs = null;
+                    if(!rs.next()) throw new Exception("OL_O_ID=" + no_o_id + " OL_D_ID=" + d_id + " OL_W_ID=" + w_id + " not found!");
+                    ol_total = rs.getFloat("ol_total");
+                    rs.close();
+                    rs = null;
 
                     if (delivUpdateCustBalDelivCnt == null) {
-                      delivUpdateCustBalDelivCnt = conn.prepareStatement(
-                        "UPDATE TUPLEcustomer SET c_balance = c_balance + ?" +
-                        ", c_delivery_cnt = c_delivery_cnt + 1" +
-                        " WHERE c_id = ?" +
-                        " AND c_d_id = ?" +
-                        " AND c_w_id = ?");
+                        delivUpdateCustBalDelivCnt = conn.prepareStatement(
+                                "UPDATE TUPLEcustomer SET c_balance = c_balance + ?" +
+                                        ", c_delivery_cnt = c_delivery_cnt + 1" +
+                                        " WHERE c_id = ?" +
+                                        " AND c_d_id = ?" +
+                                        " AND c_w_id = ?");
                     }
                     delivUpdateCustBalDelivCnt.setFloat(1, ol_total);
                     delivUpdateCustBalDelivCnt.setInt(2, c_id);
@@ -478,7 +478,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                 }
             }
 
-            conn.commit();
+            transCommit(DELIVERY);
 
             StringBuffer terminalMessage = new StringBuffer();
             terminalMessage.append("\n+---------------------------- DELIVERY ---------------------------+\n");
@@ -518,7 +518,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
             logException(e);
             try
             {
-                terminalMessage("Performing ROLLBACK...");
+                terminalMessage("Performing DELIVERY ROLLBACK...");
                 conn.rollback();
             }
             catch(Exception e1)
@@ -546,11 +546,11 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
             if(c_by_name)
             {
                 if (ordStatCountCust == null) {
-                  ordStatCountCust = conn.prepareStatement(
-                    "SELECT count(*) AS namecnt FROM TUPLEcustomer" +
-                    " WHERE c_last = ?" +
-                    " AND c_d_id = ?" +
-                    " AND c_w_id = ?");
+                    ordStatCountCust = conn.prepareStatement(
+                            "SELECT count(*) AS namecnt FROM TUPLEcustomer" +
+                                    " WHERE c_last = ?" +
+                                    " AND c_d_id = ?" +
+                                    " AND c_w_id = ?");
                 }
                 ordStatCountCust.setString(1, c_last);
                 ordStatCountCust.setInt(2, d_id);
@@ -565,12 +565,12 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                 // pick the middle customer FROM TUPLEthe list of customers
 
                 if (ordStatGetCust == null) {
-                  ordStatGetCust = conn.prepareStatement(
-                    "SELECT c_balance, c_first, c_middle, c_id FROM TUPLEcustomer" +
-                    " WHERE c_last = ?" +
-                    " AND c_d_id = ?" +
-                    " AND c_w_id = ?" +
-                    " ORDER BY c_w_id, c_d_id, c_last, c_first");
+                    ordStatGetCust = conn.prepareStatement(
+                            "SELECT c_balance, c_first, c_middle, c_id FROM TUPLEcustomer" +
+                                    " WHERE c_last = ?" +
+                                    " AND c_d_id = ?" +
+                                    " AND c_w_id = ?" +
+                                    " ORDER BY c_w_id, c_d_id, c_last, c_first");
                 }
                 ordStatGetCust.setString(1, c_last);
                 ordStatGetCust.setInt(2, d_id);
@@ -579,7 +579,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
 
                 if(!rs.next()) throw new Exception("C_LAST=" + c_last + " C_D_ID=" + d_id + " C_W_ID=" + w_id + " not found!");
                 if(namecnt%2 == 1) namecnt++;
-		
+
                 for(int i = 1; i < namecnt / 2; i++) rs.next();
                 c_id = rs.getInt("c_id");
                 c_first = rs.getString("c_first");
@@ -591,12 +591,12 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
             else
             {
                 if (ordStatGetCustBal == null) {
-                  ordStatGetCustBal = conn.prepareStatement(
-                    "SELECT c_balance, c_first, c_middle, c_last" +
-                    " FROM TUPLEcustomer" +
-                    " WHERE c_id = ?" +
-                    " AND c_d_id = ?" +
-                    " AND c_w_id = ?");
+                    ordStatGetCustBal = conn.prepareStatement(
+                            "SELECT c_balance, c_first, c_middle, c_last" +
+                                    " FROM TUPLEcustomer" +
+                                    " WHERE c_id = ?" +
+                                    " AND c_d_id = ?" +
+                                    " AND c_w_id = ?");
                 }
                 ordStatGetCustBal.setInt(1, c_id);
                 ordStatGetCustBal.setInt(2, d_id);
@@ -614,11 +614,11 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
 
             // find the newest order for the customer
             if (ordStatGetNewestOrd == null) {
-              ordStatGetNewestOrd = conn.prepareStatement(
-                "SELECT MAX(o_id) AS maxorderid FROM TUPLEoorder" +
-                " WHERE o_w_id = ?" +
-                " AND o_d_id = ?" +
-                " AND o_c_id = ?");
+                ordStatGetNewestOrd = conn.prepareStatement(
+                        "SELECT MAX(o_id) AS maxorderid FROM TUPLEoorder" +
+                                " WHERE o_w_id = ?" +
+                                " AND o_d_id = ?" +
+                                " AND o_c_id = ?");
             }
             ordStatGetNewestOrd.setInt(1, w_id);
             ordStatGetNewestOrd.setInt(2, d_id);
@@ -626,33 +626,33 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
             rs = ordStatGetNewestOrd.executeQuery();
             if(rs.next())
             {
-              //o_id = 10;
-              o_id=rs.getInt("maxorderid");
-              rs.close();
-              rs = null;
+                //o_id = 10;
+                o_id=rs.getInt("maxorderid");
+                rs.close();
+                rs = null;
 
-              // retrieve the carrier & order date for the most recent order.
+                // retrieve the carrier & order date for the most recent order.
 
-              if (ordStatGetOrder == null) {
-                ordStatGetOrder = conn.prepareStatement(
-                  "SELECT o_carrier_id, o_entry_d" +
-                  " FROM TUPLEoorder" +
-                  " WHERE o_w_id = ?" +
-                  " AND o_d_id = ?" +
-                  " AND o_c_id = ?" +
-                  " AND o_id = ?");
-              }
-              ordStatGetOrder.setInt(1, w_id);
-              ordStatGetOrder.setInt(2, d_id);
-              ordStatGetOrder.setInt(3, c_id);
-              ordStatGetOrder.setInt(4, o_id);
-              rs = ordStatGetOrder.executeQuery();
+                if (ordStatGetOrder == null) {
+                    ordStatGetOrder = conn.prepareStatement(
+                            "SELECT o_carrier_id, o_entry_d" +
+                                    " FROM TUPLEoorder" +
+                                    " WHERE o_w_id = ?" +
+                                    " AND o_d_id = ?" +
+                                    " AND o_c_id = ?" +
+                                    " AND o_id = ?");
+                }
+                ordStatGetOrder.setInt(1, w_id);
+                ordStatGetOrder.setInt(2, d_id);
+                ordStatGetOrder.setInt(3, c_id);
+                ordStatGetOrder.setInt(4, o_id);
+                rs = ordStatGetOrder.executeQuery();
 
-              if(rs.next())
-              {
-                  o_carrier_id = rs.getInt("o_carrier_id");
-                  entdate = rs.getDate("o_entry_d");
-              }
+                if(rs.next())
+                {
+                    o_carrier_id = rs.getInt("o_carrier_id");
+                    entdate = rs.getDate("o_entry_d");
+                }
             }
             rs.close();
             rs = null;
@@ -660,13 +660,13 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
             // retrieve the order lines for the most recent order
 
             if (ordStatGetOrderLines == null) {
-              ordStatGetOrderLines = conn.prepareStatement(
-                "SELECT ol_i_id, ol_supply_w_id, ol_quantity," +
-                " ol_amount, ol_delivery_d" +
-                " FROM TUPLEorder_line" +
-                " WHERE ol_o_id = ?" +
-                " AND ol_d_id =?" +
-                " AND ol_w_id = ?");
+                ordStatGetOrderLines = conn.prepareStatement(
+                        "SELECT ol_i_id, ol_supply_w_id, ol_quantity," +
+                                " ol_amount, ol_delivery_d" +
+                                " FROM TUPLEorder_line" +
+                                " WHERE ol_o_id = ?" +
+                                " AND ol_d_id =?" +
+                                " AND ol_w_id = ?");
             }
             ordStatGetOrderLines.setInt(1, o_id);
             ordStatGetOrderLines.setInt(2, d_id);
@@ -694,6 +694,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
             }
             rs.close();
             rs = null;
+            transCommit(ORDER_STATUS);
 
 
             StringBuffer terminalMessage = new StringBuffer();
@@ -752,6 +753,13 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
         {
             error("ORDER-STATUS");
             logException(e);
+            try {
+                terminalMessage("Performing ROLLBACK in ORDER_STATUS Txn...");
+                transRollback();
+            } catch(Exception e1){
+                error("ORDER_STATUS-ROLLBACK");
+                logException(e1);
+            }
         }
     }
 
@@ -785,11 +793,11 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
         try {
 
             if (stmtGetCustWhse == null) {
-              stmtGetCustWhse = conn.prepareStatement(
-                "SELECT c_discount, c_last, c_credit, w_tax" +
-                "  FROM TUPLEcustomer, TUPLEwarehouse" +
-                " WHERE w_id = ? AND w_id = c_w_id" +
-                  " AND c_d_id = ? AND c_id = ?");
+                stmtGetCustWhse = conn.prepareStatement(
+                        "SELECT c_discount, c_last, c_credit, w_tax" +
+                                "  FROM TUPLEcustomer, TUPLEwarehouse" +
+                                " WHERE w_id = ? AND w_id = c_w_id" +
+                                " AND c_d_id = ? AND c_id = ?");
             }
             stmtGetCustWhse.setInt(1, w_id);
             stmtGetCustWhse.setInt(2, d_id);
@@ -808,9 +816,9 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
             {
 
                 if (stmtGetDist == null) {
-                  stmtGetDist = conn.prepareStatement(
-                    "SELECT d_next_o_id, d_tax FROM TUPLEdistrict" +
-                    " WHERE d_id = ? AND d_w_id = ? FOR UPDATE");
+                    stmtGetDist = conn.prepareStatement(
+                            "SELECT d_next_o_id, d_tax FROM TUPLEdistrict" +
+                                    " WHERE d_id = ? AND d_w_id = ? FOR UPDATE");
                 }
                 stmtGetDist.setInt(1, d_id);
                 stmtGetDist.setInt(2, w_id);
@@ -825,9 +833,9 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                 try
                 {
                     if (stmtInsertNewOrder == null) {
-                      stmtInsertNewOrder = conn.prepareStatement(
-                        "INSERT INTO TUPLENEW_ORDER (no_o_id, no_d_id, no_w_id) " +
-                        "VALUES ( ?, ?, ?)");
+                        stmtInsertNewOrder = conn.prepareStatement(
+                                "INSERT INTO TUPLENEW_ORDER (no_o_id, no_d_id, no_w_id) " +
+                                        "VALUES ( ?, ?, ?)");
                     }
                     stmtInsertNewOrder.setInt(1, o_id);
                     stmtInsertNewOrder.setInt(2, d_id);
@@ -843,29 +851,29 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
 
 
             if (stmtUpdateDist == null) {
-              stmtUpdateDist = conn.prepareStatement(
-                "UPDATE TUPLEdistrict SET d_next_o_id = d_next_o_id + 1 " +
-                " WHERE d_id = ? AND d_w_id = ?");
+                stmtUpdateDist = conn.prepareStatement(
+                        "UPDATE TUPLEdistrict SET d_next_o_id = d_next_o_id + 1 " +
+                                " WHERE d_id = ? AND d_w_id = ?");
             }
             stmtUpdateDist.setInt(1,d_id);
             stmtUpdateDist.setInt(2,w_id);
             result = stmtUpdateDist.executeUpdate();
             if(result == 0) throw new Exception("Error!! Cannot update next_order_id on DISTRICT for D_ID=" + d_id + " D_W_ID=" + w_id);
 
-              if (stmtInsertOOrder == null) {
+            if (stmtInsertOOrder == null) {
                 stmtInsertOOrder = conn.prepareStatement(
-                  "INSERT INTO TUPLEOORDER " +
-                  " (o_id, o_d_id, o_w_id, o_c_id, o_entry_d, o_ol_cnt, o_all_local)" +
-                  " VALUES (?, ?, ?, ?, ?, ?, ?)");
-              }
-              stmtInsertOOrder.setInt(1,o_id);
-              stmtInsertOOrder.setInt(2,d_id);
-              stmtInsertOOrder.setInt(3,w_id);
-              stmtInsertOOrder.setInt(4,c_id);
-              stmtInsertOOrder.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
-              stmtInsertOOrder.setInt(6,o_ol_cnt);
-              stmtInsertOOrder.setInt(7,o_all_local);
-              stmtInsertOOrder.executeUpdate();
+                        "INSERT INTO TUPLEOORDER " +
+                                " (o_id, o_d_id, o_w_id, o_c_id, o_entry_d, o_ol_cnt, o_all_local)" +
+                                " VALUES (?, ?, ?, ?, ?, ?, ?)");
+            }
+            stmtInsertOOrder.setInt(1,o_id);
+            stmtInsertOOrder.setInt(2,d_id);
+            stmtInsertOOrder.setInt(3,w_id);
+            stmtInsertOOrder.setInt(4,c_id);
+            stmtInsertOOrder.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+            stmtInsertOOrder.setInt(6,o_ol_cnt);
+            stmtInsertOOrder.setInt(7,o_all_local);
+            stmtInsertOOrder.executeUpdate();
 
             for(int ol_number = 1; ol_number <= o_ol_cnt; ol_number++) {
                 ol_supply_w_id = supplierWarehouseIDs[ol_number-1];
@@ -873,32 +881,32 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                 ol_quantity = orderQuantities[ol_number-1];
 
                 if (item.i_id == -12345) {
-                  // an expected condition generated 1% of the time in the test data...
-                  // we throw an illegal access exception and the transaction gets rolled back later on
-                  throw new IllegalAccessException("Expected NEW-ORDER error condition excersing rollback functionality");
+                    // an expected condition generated 1% of the time in the test data...
+                    // we throw an illegal access exception and the transaction gets rolled back later on
+                    throw new IllegalAccessException("Expected NEW-ORDER error condition excersing rollback functionality");
                 }
 
-                  if (stmtGetItem == null) {
+                if (stmtGetItem == null) {
                     stmtGetItem = conn.prepareStatement(
-                      "SELECT i_price, i_name , i_data FROM TUPLEitem WHERE i_id = ?");
-                  }
-                  stmtGetItem.setInt(1, ol_i_id);
-                  rs = stmtGetItem.executeQuery();
-                  if(!rs.next()) throw new IllegalAccessException("ITEM I_ID=" + ol_i_id + " not found!");
-                  i_price = rs.getFloat("i_price");
-                  i_name = rs.getString("i_name");
-                  i_data = rs.getString("i_data");
-                  rs.close();
-                  rs = null;
+                            "SELECT i_price, i_name , i_data FROM TUPLEitem WHERE i_id = ?");
+                }
+                stmtGetItem.setInt(1, ol_i_id);
+                rs = stmtGetItem.executeQuery();
+                if(!rs.next()) throw new IllegalAccessException("ITEM I_ID=" + ol_i_id + " not found!");
+                i_price = rs.getFloat("i_price");
+                i_name = rs.getString("i_name");
+                i_data = rs.getString("i_data");
+                rs.close();
+                rs = null;
 
                 itemPrices[ol_number-1] = i_price;
                 itemNames[ol_number-1] = i_name;
 
                 if (stmtGetStock == null) {
-                  stmtGetStock = conn.prepareStatement(
-                      "SELECT s_quantity, s_data, s_dist_01, s_dist_02, s_dist_03, s_dist_04, s_dist_05, " +
-                      "       s_dist_06, s_dist_07, s_dist_08, s_dist_09, s_dist_10" +
-                      " FROM TUPLEstock WHERE s_i_id = ? AND s_w_id = ? FOR UPDATE");
+                    stmtGetStock = conn.prepareStatement(
+                            "SELECT s_quantity, s_data, s_dist_01, s_dist_02, s_dist_03, s_dist_04, s_dist_05, " +
+                                    "       s_dist_06, s_dist_07, s_dist_08, s_dist_09, s_dist_10" +
+                                    " FROM TUPLEstock WHERE s_i_id = ? AND s_w_id = ? FOR UPDATE");
                 }
                 stmtGetStock.setInt(1, ol_i_id);
                 stmtGetStock.setInt(2, ol_supply_w_id);
@@ -935,9 +943,9 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
 
 
                 if (stmtUpdateStock == null) {
-                  stmtUpdateStock = conn.prepareStatement(
-                    "UPDATE TUPLEstock SET s_quantity = ? , s_ytd = s_ytd + ?, s_remote_cnt = s_remote_cnt + ? " +
-                    " WHERE s_i_id = ? AND s_w_id = ?");
+                    stmtUpdateStock = conn.prepareStatement(
+                            "UPDATE TUPLEstock SET s_quantity = ? , s_ytd = s_ytd + ?, s_remote_cnt = s_remote_cnt + ? " +
+                                    " WHERE s_i_id = ? AND s_w_id = ?");
                 }
                 stmtUpdateStock.setInt(1,s_quantity);
                 stmtUpdateStock.setInt(2, ol_quantity);
@@ -969,27 +977,27 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                     case 10: ol_dist_info = s_dist_10; break;
                 }
 
-                  if (stmtInsertOrderLine == null) {
+                if (stmtInsertOrderLine == null) {
                     stmtInsertOrderLine = conn.prepareStatement(
-                      "INSERT INTO TUPLEorder_line (ol_o_id, ol_d_id, ol_w_id, ol_number, ol_i_id, ol_supply_w_id," +
-                      "  ol_quantity, ol_amount, ol_dist_info) VALUES (?,?,?,?,?,?,?,?,?)");
-                  }
-                  stmtInsertOrderLine.setInt(1, o_id);
-                  stmtInsertOrderLine.setInt(2, d_id);
-                  stmtInsertOrderLine.setInt(3, w_id);
-                  stmtInsertOrderLine.setInt(4, ol_number);
-                  stmtInsertOrderLine.setInt(5, ol_i_id);
-                  stmtInsertOrderLine.setInt(6, ol_supply_w_id);
-                  stmtInsertOrderLine.setInt(7, ol_quantity);
-                  stmtInsertOrderLine.setFloat(8, ol_amount);
-                  stmtInsertOrderLine.setString(9, ol_dist_info);
-                  stmtInsertOrderLine.addBatch();
+                            "INSERT INTO TUPLEorder_line (ol_o_id, ol_d_id, ol_w_id, ol_number, ol_i_id, ol_supply_w_id," +
+                                    "  ol_quantity, ol_amount, ol_dist_info) VALUES (?,?,?,?,?,?,?,?,?)");
+                }
+                stmtInsertOrderLine.setInt(1, o_id);
+                stmtInsertOrderLine.setInt(2, d_id);
+                stmtInsertOrderLine.setInt(3, w_id);
+                stmtInsertOrderLine.setInt(4, ol_number);
+                stmtInsertOrderLine.setInt(5, ol_i_id);
+                stmtInsertOrderLine.setInt(6, ol_supply_w_id);
+                stmtInsertOrderLine.setInt(7, ol_quantity);
+                stmtInsertOrderLine.setFloat(8, ol_amount);
+                stmtInsertOrderLine.setString(9, ol_dist_info);
+                stmtInsertOrderLine.addBatch();
 
             } // end-for
 
             stmtInsertOrderLine.executeBatch();
             stmtUpdateStock.executeBatch();
-            transCommit();
+            transCommit(NEW_ORDER);
             stmtInsertOrderLine.clearBatch();
             stmtUpdateStock.clearBatch();
 
@@ -1051,11 +1059,21 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
         catch (SQLException ex) {
             System.out.println("\n--- Unexpected SQLException caught in NEW-ORDER Txn ---\n");
             while (ex != null) {
-              System.out.println("Message:   " + ex.getMessage ());
-              System.out.println("SQLState:  " + ex.getSQLState ());
-              System.out.println("ErrorCode: " + ex.getErrorCode ());
-              ex = ex.getNextException();
-              System.out.println("");
+                System.out.println("Message:   " + ex.getMessage ());
+                System.out.println("SQLState:  " + ex.getSQLState ());
+                System.out.println("ErrorCode: " + ex.getErrorCode ());
+                ex = ex.getNextException();
+                System.out.println("");
+            }
+            try {
+                terminalMessage("Performing ROLLBACK in NEW-ORDER Txn...");
+                transRollback();
+                if (stmtInsertOrderLine!=null)
+                    stmtInsertOrderLine.clearBatch();
+                stmtUpdateStock.clearBatch();
+            } catch(Exception e1){
+                error("NEW-ORDER-ROLLBACK");
+                logException(e1);
             }
 
         } catch (Exception e) {
@@ -1078,18 +1096,17 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                 terminalMessage.append("+-----------------------------------------------------------------+\n\n");
                 terminalMessage(terminalMessage.toString());
             }
-	    System.out.println(e);
-        } finally {
             try {
                 terminalMessage("Performing ROLLBACK in NEW-ORDER Txn...");
                 transRollback();
                 if (stmtInsertOrderLine!=null)
-                	stmtInsertOrderLine.clearBatch();
+                    stmtInsertOrderLine.clearBatch();
                 stmtUpdateStock.clearBatch();
             } catch(Exception e1){
                 error("NEW-ORDER-ROLLBACK");
                 logException(e1);
             }
+            System.out.println(e);
         }
     }
 
@@ -1104,54 +1121,56 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
         OrderLine orln = new OrderLine();
         Stock     stck = new Stock();
 
-	if(w_id != 1235321324) {
+	/*if(w_id != 1235321324) {
 	    return;
-	}
+	}*/
         printMessage("Stock Level Txn for W_ID=" + w_id + ", D_ID=" + d_id + ", threshold=" + threshold);
 
         try
         {
-              if (stockGetDistOrderId == null) {
+            if (stockGetDistOrderId == null) {
                 stockGetDistOrderId = conn.prepareStatement(
-                  "SELECT d_next_o_id" +
-                  " FROM TUPLEdistrict" +
-                  " WHERE d_w_id = ?" +
-                  " AND d_id = ?");
-              }
-              stockGetDistOrderId.setInt(1, w_id);
-              stockGetDistOrderId.setInt(2, d_id);
-              rs = stockGetDistOrderId.executeQuery();
+                        "SELECT d_next_o_id" +
+                                " FROM TUPLEdistrict" +
+                                " WHERE d_w_id = ?" +
+                                " AND d_id = ?");
+            }
+            stockGetDistOrderId.setInt(1, w_id);
+            stockGetDistOrderId.setInt(2, d_id);
+            rs = stockGetDistOrderId.executeQuery();
 
-              if(!rs.next()) throw new Exception("D_W_ID=" + w_id + " D_ID=" + d_id + " not found!");
-              o_id = rs.getInt("d_next_o_id");
-              rs.close();
-              rs = null;
+            if(!rs.next()) throw new Exception("D_W_ID=" + w_id + " D_ID=" + d_id + " not found!");
+            o_id = rs.getInt("d_next_o_id");
+            rs.close();
+            rs = null;
             printMessage("Next Order ID for District = " + o_id);
 
-              if (stockGetCountStock == null) {
+            if (stockGetCountStock == null) {
                 stockGetCountStock = conn.prepareStatement(
-                  "SELECT COUNT(DISTINCT (s_i_id)) AS stock_count" +
-                  " FROM TUPLEorder_line, TUPLEstock" +
-                  " WHERE ol_w_id = ?" +
-                  " AND ol_d_id = ?" +
-                  " AND ol_o_id < ?" +
-                  " AND ol_o_id >= ? - 20" +
-                  " AND s_w_id = ?" +
-                  " AND s_i_id = ol_i_id" +
-                  " AND s_quantity < ?");
-              }
-              stockGetCountStock.setInt(1, w_id);
-              stockGetCountStock.setInt(2, d_id);
-              stockGetCountStock.setInt(3, o_id);
-              stockGetCountStock.setInt(4, o_id);
-              stockGetCountStock.setInt(5, w_id);
-              stockGetCountStock.setInt(6, threshold);
-              rs = stockGetCountStock.executeQuery();
+                        "SELECT COUNT(DISTINCT (s_i_id)) AS stock_count" +
+                                " FROM TUPLEorder_line, TUPLEstock" +
+                                " WHERE ol_w_id = ?" +
+                                " AND ol_d_id = ?" +
+                                " AND ol_o_id < ?" +
+                                " AND ol_o_id >= ? - 20" +
+                                " AND s_w_id = ?" +
+                                " AND s_i_id = ol_i_id" +
+                                " AND s_quantity < ?");
+            }
+            stockGetCountStock.setInt(1, w_id);
+            stockGetCountStock.setInt(2, d_id);
+            stockGetCountStock.setInt(3, o_id);
+            stockGetCountStock.setInt(4, o_id);
+            stockGetCountStock.setInt(5, w_id);
+            stockGetCountStock.setInt(6, threshold);
+            rs = stockGetCountStock.executeQuery();
 
-              if(!rs.next()) throw new Exception("OL_W_ID=" + w_id + " OL_D_ID=" + d_id + " OL_O_ID=" + o_id + " (...) not found!");
-              stock_count = rs.getInt("stock_count");
-              rs.close();
-              rs = null;
+            if(!rs.next()) throw new Exception("OL_W_ID=" + w_id + " OL_D_ID=" + d_id + " OL_O_ID=" + o_id + " (...) not found!");
+            stock_count = rs.getInt("stock_count");
+            rs.close();
+            rs = null;
+
+            transCommit(STOCK_LEVEL);
 
             StringBuffer terminalMessage = new StringBuffer();
             terminalMessage.append("\n+-------------------------- STOCK-LEVEL --------------------------+");
@@ -1170,6 +1189,16 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
         {
             error("STOCK-LEVEL");
             logException(e);
+            try
+            {
+                terminalMessage("Performing ROLLBACK...");
+                transRollback();
+            }
+            catch(Exception e1)
+            {
+                error("STOCK-LEVEL-ROLLBACK");
+                logException(e1);
+            }
         }
     }
 
@@ -1192,82 +1221,82 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
         try
         {
 
-              if (payUpdateWhse == null) {
+            if (payUpdateWhse == null) {
                 payUpdateWhse = conn.prepareStatement(
-                  "UPDATE TUPLEwarehouse SET w_ytd = w_ytd + ?  WHERE w_id = ? ");
-              }
-              payUpdateWhse.setFloat(1,h_amount);
-              payUpdateWhse.setInt(2,w_id);
-              result = payUpdateWhse.executeUpdate();
-              if(result == 0) throw new Exception("W_ID=" + w_id + " not found!");
+                        "UPDATE TUPLEwarehouse SET w_ytd = w_ytd + ?  WHERE w_id = ? ");
+            }
+            payUpdateWhse.setFloat(1,h_amount);
+            payUpdateWhse.setInt(2,w_id);
+            result = payUpdateWhse.executeUpdate();
+            if(result == 0) throw new Exception("W_ID=" + w_id + " not found!");
 
-              if (payGetWhse == null) {
+            if (payGetWhse == null) {
                 payGetWhse = conn.prepareStatement(
-                  "SELECT w_street_1, w_street_2, w_city, w_state, w_zip, w_name" +
-                  " FROM TUPLEwarehouse WHERE w_id = ?");
-              }
-              payGetWhse.setInt(1, w_id);
-              rs = payGetWhse.executeQuery();
-              if(!rs.next()) throw new Exception("W_ID=" + w_id + " not found!");
-              w_street_1 = rs.getString("w_street_1");
-              w_street_2 = rs.getString("w_street_2");
-              w_city = rs.getString("w_city");
-              w_state = rs.getString("w_state");
-              w_zip = rs.getString("w_zip");
-              w_name = rs.getString("w_name");
-              rs.close();
-              rs = null;
+                        "SELECT w_street_1, w_street_2, w_city, w_state, w_zip, w_name" +
+                                " FROM TUPLEwarehouse WHERE w_id = ?");
+            }
+            payGetWhse.setInt(1, w_id);
+            rs = payGetWhse.executeQuery();
+            if(!rs.next()) throw new Exception("W_ID=" + w_id + " not found!");
+            w_street_1 = rs.getString("w_street_1");
+            w_street_2 = rs.getString("w_street_2");
+            w_city = rs.getString("w_city");
+            w_state = rs.getString("w_state");
+            w_zip = rs.getString("w_zip");
+            w_name = rs.getString("w_name");
+            rs.close();
+            rs = null;
 
-              if (payUpdateDist == null) {
+            if (payUpdateDist == null) {
                 payUpdateDist = conn.prepareStatement(
-                  "UPDATE TUPLEdistrict SET d_ytd = d_ytd + ? WHERE d_w_id = ? AND d_id = ?");
-              }
-              payUpdateDist.setFloat(1, h_amount);
-              payUpdateDist.setInt(2, w_id);
-              payUpdateDist.setInt(3, d_id);
-              result = payUpdateDist.executeUpdate();
-              if(result == 0) throw new Exception("D_ID=" + d_id + " D_W_ID=" + w_id + " not found!");
+                        "UPDATE TUPLEdistrict SET d_ytd = d_ytd + ? WHERE d_w_id = ? AND d_id = ?");
+            }
+            payUpdateDist.setFloat(1, h_amount);
+            payUpdateDist.setInt(2, w_id);
+            payUpdateDist.setInt(3, d_id);
+            result = payUpdateDist.executeUpdate();
+            if(result == 0) throw new Exception("D_ID=" + d_id + " D_W_ID=" + w_id + " not found!");
 
-              if (payGetDist == null) {
+            if (payGetDist == null) {
                 payGetDist = conn.prepareStatement(
-                  "SELECT d_street_1, d_street_2, d_city, d_state, d_zip, d_name" +
-                  " FROM TUPLEdistrict WHERE d_w_id = ? AND d_id = ?");
-              }
-              payGetDist.setInt(1, w_id);
-              payGetDist.setInt(2, d_id);
-              rs = payGetDist.executeQuery();
-              if(!rs.next()) throw new Exception("D_ID=" + d_id + " D_W_ID=" + w_id + " not found!");
-              d_street_1 = rs.getString("d_street_1");
-              d_street_2 = rs.getString("d_street_2");
-              d_city = rs.getString("d_city");
-              d_state = rs.getString("d_state");
-              d_zip = rs.getString("d_zip");
-              d_name = rs.getString("d_name");
-              rs.close();
-              rs = null;
+                        "SELECT d_street_1, d_street_2, d_city, d_state, d_zip, d_name" +
+                                " FROM TUPLEdistrict WHERE d_w_id = ? AND d_id = ?");
+            }
+            payGetDist.setInt(1, w_id);
+            payGetDist.setInt(2, d_id);
+            rs = payGetDist.executeQuery();
+            if(!rs.next()) throw new Exception("D_ID=" + d_id + " D_W_ID=" + w_id + " not found!");
+            d_street_1 = rs.getString("d_street_1");
+            d_street_2 = rs.getString("d_street_2");
+            d_city = rs.getString("d_city");
+            d_state = rs.getString("d_state");
+            d_zip = rs.getString("d_zip");
+            d_name = rs.getString("d_name");
+            rs.close();
+            rs = null;
 
             if(c_by_name) {
                 // payment is by customer name
-                  if (payCountCust == null) {
+                if (payCountCust == null) {
                     payCountCust = conn.prepareStatement(
-                      "SELECT count(c_id) AS namecnt FROM TUPLEcustomer " +
-                      " WHERE c_last = ?  AND c_d_id = ? AND c_w_id = ?");
-                  }
-                  payCountCust.setString(1, c_last);
-                  payCountCust.setInt(2, c_d_id);
-                  payCountCust.setInt(3, c_w_id);
-                  rs = payCountCust.executeQuery();
-                  if(!rs.next()) throw new Exception("C_LAST=" + c_last + " C_D_ID=" + c_d_id + " C_W_ID=" + c_w_id + " not found!");
-                  namecnt = rs.getInt("namecnt");
-                  rs.close();
-                  rs = null;
+                            "SELECT count(c_id) AS namecnt FROM TUPLEcustomer " +
+                                    " WHERE c_last = ?  AND c_d_id = ? AND c_w_id = ?");
+                }
+                payCountCust.setString(1, c_last);
+                payCountCust.setInt(2, c_d_id);
+                payCountCust.setInt(3, c_w_id);
+                rs = payCountCust.executeQuery();
+                if(!rs.next()) throw new Exception("C_LAST=" + c_last + " C_D_ID=" + c_d_id + " C_W_ID=" + c_w_id + " not found!");
+                namecnt = rs.getInt("namecnt");
+                rs.close();
+                rs = null;
 
                 if (payCursorCustByName == null) {
-                  payCursorCustByName = conn.prepareStatement(
-                    "SELECT c_first, c_middle, c_id, c_street_1, c_street_2, c_city, c_state, c_zip," +
-                    "       c_phone, c_credit, c_credit_lim, c_discount, c_balance, c_since " +
-                    "  FROM TUPLEcustomer WHERE c_w_id = ? AND c_d_id = ? AND c_last = ? " +
-                    "ORDER BY c_w_id, c_d_id, c_last, c_first ");
+                    payCursorCustByName = conn.prepareStatement(
+                            "SELECT c_first, c_middle, c_id, c_street_1, c_street_2, c_city, c_state, c_zip," +
+                                    "       c_phone, c_credit, c_credit_lim, c_discount, c_balance, c_since " +
+                                    "  FROM TUPLEcustomer WHERE c_w_id = ? AND c_d_id = ? AND c_last = ? " +
+                                    "ORDER BY c_w_id, c_d_id, c_last, c_first ");
                 }
                 payCursorCustByName.setInt(1, c_w_id);
                 payCursorCustByName.setInt(2, c_d_id);
@@ -1293,12 +1322,12 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                 rs.close();
                 rs = null;
             } else {
-              // payment is by customer ID
+                // payment is by customer ID
                 if (payGetCust == null) {
-                  payGetCust = conn.prepareStatement(
-                    "SELECT c_first, c_middle, c_last, c_street_1, c_street_2, c_city, c_state, c_zip," +
-                    "       c_phone, c_credit, c_credit_lim, c_discount, c_balance, c_since " +
-                    "  FROM TUPLEcustomer WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?");
+                    payGetCust = conn.prepareStatement(
+                            "SELECT c_first, c_middle, c_last, c_street_1, c_street_2, c_city, c_state, c_zip," +
+                                    "       c_phone, c_credit, c_credit_lim, c_discount, c_balance, c_since " +
+                                    "  FROM TUPLEcustomer WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?");
                 }
                 payGetCust.setInt(1, c_w_id);
                 payGetCust.setInt(2, c_d_id);
@@ -1328,8 +1357,8 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
             if(c_credit.equals("BC")) {  // bad credit
 
                 if (payGetCustCdata == null) {
-                  payGetCustCdata = conn.prepareStatement(
-                    "SELECT c_data FROM TUPLEcustomer WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?");
+                    payGetCustCdata = conn.prepareStatement(
+                            "SELECT c_data FROM TUPLEcustomer WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?");
                 }
                 payGetCustCdata.setInt(1, c_w_id);
                 payGetCustCdata.setInt(2, c_d_id);
@@ -1340,18 +1369,18 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                 rs.close();
                 rs = null;
 
-              c_new_data = c_id + " " + c_d_id + " " + c_w_id + " " + d_id + " " + w_id  + " " + h_amount + " |";
-              if(c_data.length() > c_new_data.length()) {
-                  c_new_data += c_data.substring(0, c_data.length()-c_new_data.length());
-              } else {
-                  c_new_data += c_data;
-              }
-              if(c_new_data.length() > 500) c_new_data = c_new_data.substring(0, 500);
+                c_new_data = c_id + " " + c_d_id + " " + c_w_id + " " + d_id + " " + w_id  + " " + h_amount + " |";
+                if(c_data.length() > c_new_data.length()) {
+                    c_new_data += c_data.substring(0, c_data.length()-c_new_data.length());
+                } else {
+                    c_new_data += c_data;
+                }
+                if(c_new_data.length() > 500) c_new_data = c_new_data.substring(0, 500);
 
                 if (payUpdateCustBalCdata == null) {
-                  payUpdateCustBalCdata = conn.prepareStatement(
-                    "UPDATE TUPLEcustomer SET c_balance = ?, c_data = ? " +
-                    " WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?");
+                    payUpdateCustBalCdata = conn.prepareStatement(
+                            "UPDATE TUPLEcustomer SET c_balance = ?, c_data = ? " +
+                                    " WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?");
                 }
                 payUpdateCustBalCdata.setFloat(1, c_balance);
                 payUpdateCustBalCdata.setString(2, c_new_data);
@@ -1360,13 +1389,13 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                 payUpdateCustBalCdata.setInt(5, c_id);
                 result = payUpdateCustBalCdata.executeUpdate();
 
-              if(result == 0) throw new Exception("Error in PYMNT Txn updating Customer C_ID=" + c_id + " C_W_ID=" + c_w_id + " C_D_ID=" + c_d_id);
+                if(result == 0) throw new Exception("Error in PYMNT Txn updating Customer C_ID=" + c_id + " C_W_ID=" + c_w_id + " C_D_ID=" + c_d_id);
 
             } else { // GoodCredit
 
                 if (payUpdateCustBal == null) {
-                  payUpdateCustBal = conn.prepareStatement(
-                    "UPDATE TUPLEcustomer SET c_balance = ? WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?");
+                    payUpdateCustBal = conn.prepareStatement(
+                            "UPDATE TUPLEcustomer SET c_balance = ? WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?");
                 }
                 payUpdateCustBal.setFloat(1, c_balance);
                 payUpdateCustBal.setInt(2, c_w_id);
@@ -1374,7 +1403,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
                 payUpdateCustBal.setInt(4, c_id);
                 result = payUpdateCustBal.executeUpdate();
 
-              if(result == 0) throw new Exception("C_ID=" + c_id + " C_W_ID=" + c_w_id + " C_D_ID=" + c_d_id + " not found!");
+                if(result == 0) throw new Exception("C_ID=" + c_id + " C_W_ID=" + c_w_id + " C_D_ID=" + c_d_id + " not found!");
 
             }
 
@@ -1385,9 +1414,9 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
 
 
             if (payInsertHist == null) {
-              payInsertHist = conn.prepareStatement(
-                "INSERT INTO TUPLEhistory (h_c_d_id, h_c_w_id, h_c_id, h_d_id, h_w_id, h_date, h_amount, h_data) " +
-                " VALUES (?,?,?,?,?,?,?,?)");
+                payInsertHist = conn.prepareStatement(
+                        "INSERT INTO TUPLEhistory (h_c_d_id, h_c_w_id, h_c_id, h_d_id, h_w_id, h_date, h_amount, h_data) " +
+                                " VALUES (?,?,?,?,?,?,?,?)");
             }
             payInsertHist.setInt(1, c_d_id);
             payInsertHist.setInt(2, c_w_id);
@@ -1399,7 +1428,7 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
             payInsertHist.setString(8, h_data);
             payInsertHist.executeUpdate();
 
-            transCommit();
+            transCommit(PAYMENT);
 
             StringBuffer terminalMessage = new StringBuffer();
             terminalMessage.append("\n+---------------------------- PAYMENT ----------------------------+");
@@ -1449,10 +1478,10 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
             terminalMessage.append("\n   Since:   ");
             if (c_since != null)
             {
-              terminalMessage.append(c_since.toString());
-		    } else {
-              terminalMessage.append("");
-			}
+                terminalMessage.append(c_since.toString());
+            } else {
+                terminalMessage.append("");
+            }
             terminalMessage.append("\n   Credit:  ");
             terminalMessage.append(c_credit);
             terminalMessage.append("\n   %Disc:   ");
@@ -1524,24 +1553,31 @@ public class jTPCCTerminal implements jTPCCConfig, Runnable
     }
 
 
-  void transRollback () {
-      try {
-        conn.rollback();
-      } catch(SQLException se) {
-        System.out.println(se.getMessage());
-      }
-  }
+    void transRollback () {
+        try {
+            conn.rollback();
+            abortCount++;
+        } catch(SQLException se) {
+            System.out.println(se.getMessage());
+        }
+    }
 
 
-  void transCommit() {
-      try {
-        conn.commit();
-      } catch(SQLException se) {
-        System.out.println(se.getMessage());
-        //transRollback();
-      }
+    void transCommit(int transactionType) {
+        try {
+            conn.commit();
+            commitCount++;
+            if (transactionType == NEW_ORDER)
+            {
+                newOrderCounter++;
+            }
+        } catch(SQLException se) {
+            abortCount++;
+            System.out.println(se.getMessage());
+            //transRollback();
+        }
 
-  } // end transCommit()
+    } // end transCommit()
 
 
 
